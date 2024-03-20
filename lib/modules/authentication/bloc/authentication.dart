@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wildtodo/modules/authentication/models/user.dart';
 
 part 'authentication.freezed.dart';
 
@@ -22,10 +23,12 @@ sealed class AuthenticationState with _$AuthenticationState {
   const AuthenticationState._();
 
   ///Аунтефицирован
-  factory AuthenticationState.authenticated() = _AuthenticatedAuthenticationState;
+  const factory AuthenticationState.authenticated({
+    required final User user,
+  }) = _AuthenticatedAuthenticationState;
 
   ///В обработке
-  factory AuthenticationState.inProgress() = InProgressAuthenticationState;
+  const factory AuthenticationState.inProgress() = InProgressAuthenticationState;
 
   ///Не аунтифицирован
   factory AuthenticationState.unAuthenticated() = UnAuthenticatedAuthenticationState;
