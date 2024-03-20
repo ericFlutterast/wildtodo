@@ -56,18 +56,18 @@ sealed class AuthenticationState with _$AuthenticationState {
   }) = InProgressAuthenticationState;
 
   ///Не аунтифицирован
-  factory AuthenticationState.unAuthenticated({
+  const factory AuthenticationState.unAuthenticated({
     @Default(User.notAuthenticatedUser()) final User user,
   }) = UnAuthenticatedAuthenticationState;
 
   ///ошибка
-  factory AuthenticationState.error({
+  const factory AuthenticationState.error({
     @Default(User.notAuthenticatedUser()) final User user,
     @Default('Произошла ошибка') final String message,
   }) = ErrorAuthenticatedAuthenticationState;
 
   ///успех
-  factory AuthenticationState.success({
+  const factory AuthenticationState.success({
     @Default(User.notAuthenticatedUser()) final User user,
   }) = SuccessAuthenticatedAuthenticationState;
 }
@@ -88,14 +88,50 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         ) {
     on<AuthenticationEvent>(
       (event, emit) => event.map(
-        login: (event) => _login,
-        logout: (event) => _logout,
+        login: (event) => _login(event, emit),
+        logout: (event) => _logout(event, emit),
       ),
       transformer: bloc_concurrency.droppable(),
     );
   }
 
-  Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emitter) async {}
+  Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      emit(AuthenticationState.inProgress(user: state.user));
+      final newUser = await _repository.login(login: event.login, password: event.password);
+      emit(AuthenticationState.success(user: newUser));
+    } on FormatException {
+      //Network error handler
+      emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
+    } on Object catch (error, stackTracer) {
+      emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
+      rethrow;
+    } finally {
+      if (state.user.isAuthenticated) {
+        emit(AuthenticationState.authenticated(user: state.user));
+      } else {
+        emit(const AuthenticationState.unAuthenticated());
+      }
+    }
+  }
 
-  Future<void> _logout(_$LogoutAuthenticationEvent event, Emitter<AuthenticationState> emitter) async {}
+  Future<void> _logout(_$LogoutAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      emit(AuthenticationState.inProgress(user: state.user));
+      //...
+      emit(const AuthenticationState.success(user: User.notAuthenticatedUser()));
+    } on FormatException {
+      //Network error handler
+      emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
+    } on Object catch (error, stackTracer) {
+      emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
+      rethrow;
+    } finally {
+      if (state.user.isAuthenticated) {
+        emit(AuthenticationState.authenticated(user: state.user));
+      } else {
+        emit(const AuthenticationState.unAuthenticated());
+      }
+    }
+  }
 }

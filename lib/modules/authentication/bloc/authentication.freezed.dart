@@ -819,7 +819,7 @@ class __$$UnAuthenticatedAuthenticationStateImplCopyWithImpl<$Res>
 
 class _$UnAuthenticatedAuthenticationStateImpl
     extends UnAuthenticatedAuthenticationState {
-  _$UnAuthenticatedAuthenticationStateImpl(
+  const _$UnAuthenticatedAuthenticationStateImpl(
       {this.user = const User.notAuthenticatedUser()})
       : super._();
 
@@ -938,9 +938,9 @@ class _$UnAuthenticatedAuthenticationStateImpl
 }
 
 abstract class UnAuthenticatedAuthenticationState extends AuthenticationState {
-  factory UnAuthenticatedAuthenticationState({final User user}) =
+  const factory UnAuthenticatedAuthenticationState({final User user}) =
       _$UnAuthenticatedAuthenticationStateImpl;
-  UnAuthenticatedAuthenticationState._() : super._();
+  const UnAuthenticatedAuthenticationState._() : super._();
 
   @override
   User get user;
@@ -996,7 +996,7 @@ class __$$ErrorAuthenticatedAuthenticationStateImplCopyWithImpl<$Res>
 
 class _$ErrorAuthenticatedAuthenticationStateImpl
     extends ErrorAuthenticatedAuthenticationState {
-  _$ErrorAuthenticatedAuthenticationStateImpl(
+  const _$ErrorAuthenticatedAuthenticationStateImpl(
       {this.user = const User.notAuthenticatedUser(),
       this.message = 'Произошла ошибка'})
       : super._();
@@ -1121,10 +1121,10 @@ class _$ErrorAuthenticatedAuthenticationStateImpl
 
 abstract class ErrorAuthenticatedAuthenticationState
     extends AuthenticationState {
-  factory ErrorAuthenticatedAuthenticationState(
+  const factory ErrorAuthenticatedAuthenticationState(
       {final User user,
       final String message}) = _$ErrorAuthenticatedAuthenticationStateImpl;
-  ErrorAuthenticatedAuthenticationState._() : super._();
+  const ErrorAuthenticatedAuthenticationState._() : super._();
 
   @override
   User get user;
@@ -1176,7 +1176,7 @@ class __$$SuccessAuthenticatedAuthenticationStateImplCopyWithImpl<$Res>
 
 class _$SuccessAuthenticatedAuthenticationStateImpl
     extends SuccessAuthenticatedAuthenticationState {
-  _$SuccessAuthenticatedAuthenticationStateImpl(
+  const _$SuccessAuthenticatedAuthenticationStateImpl(
       {this.user = const User.notAuthenticatedUser()})
       : super._();
 
@@ -1297,9 +1297,9 @@ class _$SuccessAuthenticatedAuthenticationStateImpl
 
 abstract class SuccessAuthenticatedAuthenticationState
     extends AuthenticationState {
-  factory SuccessAuthenticatedAuthenticationState({final User user}) =
+  const factory SuccessAuthenticatedAuthenticationState({final User user}) =
       _$SuccessAuthenticatedAuthenticationStateImpl;
-  SuccessAuthenticatedAuthenticationState._() : super._();
+  const SuccessAuthenticatedAuthenticationState._() : super._();
 
   @override
   User get user;
