@@ -47,9 +47,14 @@ sealed class AuthenticationState with _$AuthenticationState {
 }
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc() : super(AuthenticationState.unAuthenticated()) {
-    on<AuthenticationEvent>((event, emit) {
-      // здесь будет маппер обработки ивентов
-    });
+  AuthenticationBloc({
+    final User? user,
+  }) : super(
+          user?.when<AuthenticationState>(
+                  authenticated: (user) => AuthenticationState.authenticated(user: user),
+                  notAuthenticated: () => AuthenticationState.unAuthenticated()) ??
+              AuthenticationState.unAuthenticated(),
+        ) {
+    on<AuthenticationEvent>((event, emit) {});
   }
 }
