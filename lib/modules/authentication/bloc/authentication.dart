@@ -1,5 +1,7 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository.dart';
 import 'package:wildtodo/modules/authentication/models/user.dart';
 
 part 'authentication.freezed.dart';
@@ -47,14 +49,28 @@ sealed class AuthenticationState with _$AuthenticationState {
 }
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+  final IAuthenticationRepository _repository;
+
   AuthenticationBloc({
     final User? user,
-  }) : super(
+    required IAuthenticationRepository repository,
+  })  : _repository = repository,
+        super(
           user?.when<AuthenticationState>(
                   authenticated: (user) => AuthenticationState.authenticated(user: user),
                   notAuthenticated: () => AuthenticationState.unAuthenticated()) ??
               AuthenticationState.unAuthenticated(),
         ) {
-    on<AuthenticationEvent>((event, emit) {});
+    on<AuthenticationEvent>(
+      (event, emit) => event.map(
+        login: (event) => _login,
+        logout: (event) => _logout,
+      ),
+      transformer: bloc_concurrency.droppable(),
+    );
   }
+
+  Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emitter) async {}
+
+  Future<void> _logout(_$LogoutAuthenticationEvent event, Emitter<AuthenticationState> emitter) async {}
 }
