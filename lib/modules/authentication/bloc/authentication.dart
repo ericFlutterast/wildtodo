@@ -33,16 +33,9 @@ sealed class AuthenticationState with _$AuthenticationState {
       );
 
   bool get isProgress => maybeMap<bool>(
-        inProgress: (_) => true,
-        orElse: () => false,
-      );
-
-  User get getUser => when(
-        authenticated: (user) => user,
-        inProgress: (user) => user,
-        unAuthenticated: (user) => user,
-        error: (user, _) => user,
-        success: (user) => user,
+        authenticated: (_) => false,
+        unAuthenticated: (_) => false,
+        orElse: () => true,
       );
 
   ///Аунтефицирован
