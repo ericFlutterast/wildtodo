@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'authentication_bloc.freezed.dart';
+part 'authentication.freezed.dart';
 
 @freezed
-sealed class AuthenticationEvent extends _$AuthenticationEvent {
+sealed class AuthenticationEvent with _$AuthenticationEvent {
   const AuthenticationEvent._();
 
   ///Залогинится
@@ -18,7 +18,7 @@ sealed class AuthenticationEvent extends _$AuthenticationEvent {
 }
 
 @freezed
-sealed class AuthenticationState extends _$AuthenticationState {
+sealed class AuthenticationState with _$AuthenticationState {
   const AuthenticationState._();
 
   ///Аунтефицирован
