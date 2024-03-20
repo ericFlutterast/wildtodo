@@ -29,6 +29,11 @@ sealed class AuthenticationState with _$AuthenticationState {
         unAuthenticated: (_) => null,
       );
 
+  bool get isProgress => maybeMap<bool>(
+        inProgress: (_) => true,
+        orElse: () => false,
+      );
+
   ///Аунтефицирован
   const factory AuthenticationState.authenticated({
     required final User user,
