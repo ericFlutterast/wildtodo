@@ -7,13 +7,14 @@ part 'authentication_bloc.freezed.dart';
 sealed class AuthenticationEvent extends _$AuthenticationEvent {
   const AuthenticationEvent._();
 
-  const factory AuthenticationEvent.create() = _$CreateAuthenticationEvent;
+  ///Залогинится
+  const factory AuthenticationEvent.login({
+    required String login,
+    required String password,
+  }) = _$LoginAuthenticationEvent;
 
-  const factory AuthenticationEvent.read() = _$ReadAuthenticationEvent;
-
-  const factory AuthenticationEvent.update() = _$UpdateAuthenticationEvent;
-
-  const factory AuthenticationEvent.delete() = _$DeleteAuthenticationEvent;
+  ///Разлогиниться
+  const factory AuthenticationEvent.logout() = _$LogoutAuthenticationEvent;
 }
 
 @freezed
