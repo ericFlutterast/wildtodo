@@ -338,21 +338,21 @@ abstract class _$LogoutAuthenticationEvent extends AuthenticationEvent {
 mixin _$AuthenticationState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() authenticated,
+    required TResult Function(User user) authenticated,
     required TResult Function() inProgress,
     required TResult Function() unAuthenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? authenticated,
+    TResult? Function(User user)? authenticated,
     TResult? Function()? inProgress,
     TResult? Function()? unAuthenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? authenticated,
+    TResult Function(User user)? authenticated,
     TResult Function()? inProgress,
     TResult Function()? unAuthenticated,
     required TResult orElse(),
@@ -409,6 +409,8 @@ abstract class _$$AuthenticatedAuthenticationStateImplCopyWith<$Res> {
           _$AuthenticatedAuthenticationStateImpl value,
           $Res Function(_$AuthenticatedAuthenticationStateImpl) then) =
       __$$AuthenticatedAuthenticationStateImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({User user});
 }
 
 /// @nodoc
@@ -420,59 +422,85 @@ class __$$AuthenticatedAuthenticationStateImplCopyWithImpl<$Res>
       _$AuthenticatedAuthenticationStateImpl _value,
       $Res Function(_$AuthenticatedAuthenticationStateImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+  }) {
+    return _then(_$AuthenticatedAuthenticationStateImpl(
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as User,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$AuthenticatedAuthenticationStateImpl
     extends _AuthenticatedAuthenticationState {
-  _$AuthenticatedAuthenticationStateImpl() : super._();
+  const _$AuthenticatedAuthenticationStateImpl({required this.user})
+      : super._();
+
+  @override
+  final User user;
 
   @override
   String toString() {
-    return 'AuthenticationState.authenticated()';
+    return 'AuthenticationState.authenticated(user: $user)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AuthenticatedAuthenticationStateImpl);
+            other is _$AuthenticatedAuthenticationStateImpl &&
+            (identical(other.user, user) || other.user == user));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, user);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AuthenticatedAuthenticationStateImplCopyWith<
+          _$AuthenticatedAuthenticationStateImpl>
+      get copyWith => __$$AuthenticatedAuthenticationStateImplCopyWithImpl<
+          _$AuthenticatedAuthenticationStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() authenticated,
+    required TResult Function(User user) authenticated,
     required TResult Function() inProgress,
     required TResult Function() unAuthenticated,
   }) {
-    return authenticated();
+    return authenticated(user);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? authenticated,
+    TResult? Function(User user)? authenticated,
     TResult? Function()? inProgress,
     TResult? Function()? unAuthenticated,
   }) {
-    return authenticated?.call();
+    return authenticated?.call(user);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? authenticated,
+    TResult Function(User user)? authenticated,
     TResult Function()? inProgress,
     TResult Function()? unAuthenticated,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated();
+      return authenticated(user);
     }
     return orElse();
   }
@@ -516,9 +544,15 @@ class _$AuthenticatedAuthenticationStateImpl
 }
 
 abstract class _AuthenticatedAuthenticationState extends AuthenticationState {
-  factory _AuthenticatedAuthenticationState() =
+  const factory _AuthenticatedAuthenticationState({required final User user}) =
       _$AuthenticatedAuthenticationStateImpl;
-  _AuthenticatedAuthenticationState._() : super._();
+  const _AuthenticatedAuthenticationState._() : super._();
+
+  User get user;
+  @JsonKey(ignore: true)
+  _$$AuthenticatedAuthenticationStateImplCopyWith<
+          _$AuthenticatedAuthenticationStateImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -544,7 +578,7 @@ class __$$InProgressAuthenticationStateImplCopyWithImpl<$Res>
 
 class _$InProgressAuthenticationStateImpl
     extends InProgressAuthenticationState {
-  _$InProgressAuthenticationStateImpl() : super._();
+  const _$InProgressAuthenticationStateImpl() : super._();
 
   @override
   String toString() {
@@ -564,7 +598,7 @@ class _$InProgressAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() authenticated,
+    required TResult Function(User user) authenticated,
     required TResult Function() inProgress,
     required TResult Function() unAuthenticated,
   }) {
@@ -574,7 +608,7 @@ class _$InProgressAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? authenticated,
+    TResult? Function(User user)? authenticated,
     TResult? Function()? inProgress,
     TResult? Function()? unAuthenticated,
   }) {
@@ -584,7 +618,7 @@ class _$InProgressAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? authenticated,
+    TResult Function(User user)? authenticated,
     TResult Function()? inProgress,
     TResult Function()? unAuthenticated,
     required TResult orElse(),
@@ -634,8 +668,9 @@ class _$InProgressAuthenticationStateImpl
 }
 
 abstract class InProgressAuthenticationState extends AuthenticationState {
-  factory InProgressAuthenticationState() = _$InProgressAuthenticationStateImpl;
-  InProgressAuthenticationState._() : super._();
+  const factory InProgressAuthenticationState() =
+      _$InProgressAuthenticationStateImpl;
+  const InProgressAuthenticationState._() : super._();
 }
 
 /// @nodoc
@@ -681,7 +716,7 @@ class _$UnAuthenticatedAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() authenticated,
+    required TResult Function(User user) authenticated,
     required TResult Function() inProgress,
     required TResult Function() unAuthenticated,
   }) {
@@ -691,7 +726,7 @@ class _$UnAuthenticatedAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? authenticated,
+    TResult? Function(User user)? authenticated,
     TResult? Function()? inProgress,
     TResult? Function()? unAuthenticated,
   }) {
@@ -701,7 +736,7 @@ class _$UnAuthenticatedAuthenticationStateImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? authenticated,
+    TResult Function(User user)? authenticated,
     TResult Function()? inProgress,
     TResult Function()? unAuthenticated,
     required TResult orElse(),

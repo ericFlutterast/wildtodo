@@ -22,6 +22,13 @@ sealed class AuthenticationEvent with _$AuthenticationEvent {
 sealed class AuthenticationState with _$AuthenticationState {
   const AuthenticationState._();
 
+  ///если аунтефицирован вернем пользователя иначе null
+  User? get authenticationOrNull => map<User?>(
+        authenticated: (state) => state.user,
+        inProgress: (_) => const User.notAuthenticatedUser(),
+        unAuthenticated: (_) => null,
+      );
+
   ///Аунтефицирован
   const factory AuthenticationState.authenticated({
     required final User user,
