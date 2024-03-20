@@ -20,15 +20,18 @@ sealed class AuthenticationEvent extends _$AuthenticationEvent {
 sealed class AuthenticationState extends _$AuthenticationState {
   const AuthenticationState._();
 
-  factory AuthenticationState.idle() = _IdleAuthenticationState;
+  ///Аунтефицирован
+  factory AuthenticationState.authenticated() = _AuthenticatedAuthenticationState;
 
-  factory AuthenticationState.error() = ErrorAuthenticationState;
+  ///В обработке
+  factory AuthenticationState.inProgress() = InProgressAuthenticationState;
 
-  factory AuthenticationState.success() = SuccessAuthenticationState;
+  ///Не аунтифицирован
+  factory AuthenticationState.unAuthenticated() = UnAuthenticatedAuthenticationState;
 }
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc() : super(AuthenticationState.idle()) {
+  AuthenticationBloc() : super(AuthenticationState.unAuthenticated()) {
     on<AuthenticationEvent>((event, emit) {
       // здесь будет маппер обработки ивентов
     });
