@@ -6,6 +6,7 @@ import 'package:wildtodo/modules/authentication/models/user.dart';
 
 part 'authentication.freezed.dart';
 
+//ивенты
 @freezed
 sealed class AuthenticationEvent with _$AuthenticationEvent {
   const AuthenticationEvent._();
@@ -20,20 +21,28 @@ sealed class AuthenticationEvent with _$AuthenticationEvent {
   const factory AuthenticationEvent.logout() = _$LogoutAuthenticationEvent;
 }
 
+//состояния
 @freezed
 sealed class AuthenticationState with _$AuthenticationState {
   const AuthenticationState._();
 
   ///если аунтефицирован вернем пользователя иначе null
-  User? get authenticationOrNull => map<User?>(
-        authenticated: (state) => state.user,
-        inProgress: (_) => const User.notAuthenticatedUser(),
+  User? get authenticationOrNull => maybeMap<User?>(
         unAuthenticated: (_) => null,
+        orElse: () => user.authenticatedOrNull,
       );
 
   bool get isProgress => maybeMap<bool>(
         inProgress: (_) => true,
         orElse: () => false,
+      );
+
+  User get getUser => when(
+        authenticated: (user) => user,
+        inProgress: (user) => user,
+        unAuthenticated: (user) => user,
+        error: (user, _) => user,
+        success: (user) => user,
       );
 
   ///Аунтефицирован
@@ -42,12 +51,28 @@ sealed class AuthenticationState with _$AuthenticationState {
   }) = _AuthenticatedAuthenticationState;
 
   ///В обработке
-  const factory AuthenticationState.inProgress() = InProgressAuthenticationState;
+  const factory AuthenticationState.inProgress({
+    @Default(User.notAuthenticatedUser()) final User user,
+  }) = InProgressAuthenticationState;
 
   ///Не аунтифицирован
-  factory AuthenticationState.unAuthenticated() = UnAuthenticatedAuthenticationState;
+  factory AuthenticationState.unAuthenticated({
+    @Default(User.notAuthenticatedUser()) final User user,
+  }) = UnAuthenticatedAuthenticationState;
+
+  ///ошибка
+  factory AuthenticationState.error({
+    @Default(User.notAuthenticatedUser()) final User user,
+    @Default('Произошла ошибка') final String message,
+  }) = ErrorAuthenticatedAuthenticationState;
+
+  ///успех
+  factory AuthenticationState.success({
+    @Default(User.notAuthenticatedUser()) final User user,
+  }) = SuccessAuthenticatedAuthenticationState;
 }
 
+//блок
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final IAuthenticationRepository _repository;
 
