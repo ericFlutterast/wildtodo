@@ -13,12 +13,19 @@ sealed class AuthenticationEvent with _$AuthenticationEvent {
 
   ///Залогинится
   const factory AuthenticationEvent.login({
-    required String login,
+    required String uid,
+    required String email,
     required String password,
   }) = _$LoginAuthenticationEvent;
 
   ///Разлогиниться
   const factory AuthenticationEvent.logout() = _$LogoutAuthenticationEvent;
+
+  ///Создать пользователя
+  const factory AuthenticationEvent.createUser({
+    required String email,
+    required String password,
+  }) = _$CreateUserAuthenticationEvent;
 }
 
 //состояния
@@ -83,6 +90,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       (event, emit) => event.map(
         login: (event) => _login(event, emit),
         logout: (event) => _logout(event, emit),
+        createUser: (event) => _createUser(event, emit),
       ),
       transformer: bloc_concurrency.droppable(),
     );
@@ -91,7 +99,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
-      final newUser = await _repository.login(email: event.login, password: event.password, uid: '');
+      final newUser = await _repository.login(email: event.email, password: event.password, uid: event.uid);
       emit(AuthenticationState.success(user: newUser));
     } on FormatException {
       //Network error handler
@@ -125,6 +133,20 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       } else {
         emit(const AuthenticationState.unAuthenticated());
       }
+    }
+  }
+
+  Future<void> _createUser(_$CreateUserAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      emit(AuthenticationState.inProgress(user: state.user));
+      final uid = await _repository.createUser(email: event.email, password: event.password);
+      _login(_$LoginAuthenticationEvent(uid: uid, email: event.email, password: event.password), emit);
+    } on FormatException {
+      //Network error handler
+      emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
+    } on Object catch (error, stackTracer) {
+      emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
+      rethrow;
     }
   }
 }
