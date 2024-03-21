@@ -1,7 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository.dart';
+import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository_interface.dart';
 import 'package:wildtodo/modules/authentication/models/user.dart';
 
 part 'authentication.freezed.dart';
@@ -76,8 +76,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         super(
           user?.when<AuthenticationState>(
                   authenticated: (user) => AuthenticationState.authenticated(user: user),
-                  notAuthenticated: () => AuthenticationState.unAuthenticated()) ??
-              AuthenticationState.unAuthenticated(),
+                  notAuthenticated: () => const AuthenticationState.unAuthenticated()) ??
+              const AuthenticationState.unAuthenticated(),
         ) {
     on<AuthenticationEvent>(
       (event, emit) => event.map(
@@ -91,7 +91,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
-      final newUser = await _repository.login(login: event.login, password: event.password);
+      final newUser = await _repository.login(email: event.login, password: event.password, uid: '');
       emit(AuthenticationState.success(user: newUser));
     } on FormatException {
       //Network error handler
