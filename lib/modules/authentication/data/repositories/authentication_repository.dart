@@ -10,13 +10,15 @@ class AuthenticationRepository implements IAuthenticationRepository {
   }
 
   @override
-  Future<void> createUser({required String email, required String password}) async {
-    _networkClient.request(
+  Future<String> createUser({required String email, required String password}) async {
+    final response = await _networkClient.request(
       type: Post(path: '/api/h1/users/', data: {
         "email": email,
         "password": password,
       }),
     );
+
+    return response?.data['user_id'];
   }
 
   @override
