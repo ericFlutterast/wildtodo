@@ -22,11 +22,16 @@ class CustomNavigator {
       PageRouteBuilder(
         opaque: false,
         fullscreenDialog: true,
-        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        pageBuilder: (context, _, __) {
           return modal;
         },
-        transitionsBuilder: (context, animation, animationSecond, child) {
-          return modal;
+        transitionDuration: const Duration(milliseconds: 600),
+        reverseTransitionDuration: const Duration(milliseconds: 400),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(animation),
+            child: child,
+          );
         },
       ),
     );
