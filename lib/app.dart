@@ -12,13 +12,25 @@ class AppRoot extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SafeArea(
-        child: HomeNavigationScreen(
-          screens: [
-            CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate([
+      home: const Wildtodo(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Wildtodo extends StatelessWidget {
+  const Wildtodo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: HomeNavigationScreen(
+        screens: [
+          CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
                     Text(
                       "Page 1",
                       style: context.theme.typeface.headline,
@@ -28,83 +40,83 @@ class AppRoot extends StatelessWidget {
                       text1,
                       style: context.theme.typeface.body2,
                     ),
-                  ]),
+                  ],
                 ),
-              ],
-            ),
-            CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    Text(
-                      "Page 2",
-                      style: context.theme.typeface.headline,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      text1,
-                      style: context.theme.typeface.body2,
-                    ),
-                  ]),
-                ),
-              ],
-            ),
-            CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    Text(
-                      "Page 3",
-                      style: context.theme.typeface.headline,
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      text1,
-                      style: context.theme.typeface.body2,
-                      textAlign: TextAlign.start,
-                    ),
-                  ]),
-                ),
-              ],
-            ),
-            CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    Text(
-                      "Page 4",
-                      style: context.theme.typeface.headline,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      text1,
-                      style: context.theme.typeface.body2,
-                    ),
-                  ]),
-                ),
-              ],
-            ),
-          ],
-          navigation: const [
-            HomeNavigationButtonData(
-              title: "Tasks",
-              icon: Icons.message,
-            ),
-            HomeNavigationButtonData(
-              title: "Messsages",
-              icon: Icons.message,
-            ),
-            HomeNavigationButtonData(
-              title: "Friends",
-              icon: Icons.message,
-            ),
-            HomeNavigationButtonData(
-              title: "Notifications",
-              icon: Icons.message,
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Text(
+                    "Page 2",
+                    style: context.theme.typeface.headline,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    text1,
+                    style: context.theme.typeface.body2,
+                  ),
+                ]),
+              ),
+            ],
+          ),
+          CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Text(
+                    "Page 3",
+                    style: context.theme.typeface.headline,
+                    textAlign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    text1,
+                    style: context.theme.typeface.body2,
+                    textAlign: TextAlign.start,
+                  ),
+                ]),
+              ),
+            ],
+          ),
+          CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Text(
+                    "Page 4",
+                    style: context.theme.typeface.headline,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    text1,
+                    style: context.theme.typeface.body2,
+                  ),
+                ]),
+              ),
+            ],
+          ),
+        ],
+        navigation: const [
+          HomeNavigationButtonData(
+            title: "Tasks",
+            icon: Icons.message,
+          ),
+          HomeNavigationButtonData(
+            title: "Messsages",
+            icon: Icons.message,
+          ),
+          HomeNavigationButtonData(
+            title: "Friends",
+            icon: Icons.message,
+          ),
+          HomeNavigationButtonData(
+            title: "Notifications",
+            icon: Icons.message,
+          ),
+        ],
       ),
     );
   }
