@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
@@ -43,6 +44,15 @@ class CustomRouter {
           ),
         ],
       ),
+      GoRoute(
+          path: '/authentication',
+          pageBuilder: (context, state) {
+            return _createPage(
+              context: context,
+              state: state,
+              child: const AuthenticationScreen(),
+            );
+          }),
     ],
   );
 
