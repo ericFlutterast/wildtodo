@@ -12,6 +12,10 @@ class CustomNavigator {
     );
   }
 
+  static pushNamed({required BuildContext context, required String routeName, Object? arguments}) {
+    Navigator.pushNamed(context, routeName, arguments: arguments);
+  }
+
   static pop<T>(BuildContext context, [T? result]) {
     Navigator.pop(context, result);
   }
