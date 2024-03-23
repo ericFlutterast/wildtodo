@@ -3,35 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 
+final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _bottomNavigationKey = GlobalKey<NavigatorState>();
+
 class CustomRouter {
   static final router = GoRouter(
+    initialLocation: '/tasks',
+    navigatorKey: _navigationState,
     routes: [
-      GoRoute(
-          path: '/',
-          builder: (context, state) {
-            return const HomeNavigationScreen();
-          }),
-      GoRoute(
-        path: '/tasks',
-        pageBuilder: (context, state) {
-          return _createPage(context: context, child: Container(color: Colors.pink));
+      ShellRoute(
+        navigatorKey: _bottomNavigationKey,
+        builder: (context, state, child) {
+          return HomeNavigationScreen(child: child);
         },
+        routes: [
+          GoRoute(
+            path: '/tasks',
+            pageBuilder: (context, state) {
+              return _createPage(context: context, child: Container(color: Colors.pink));
+            },
+          ),
+          GoRoute(
+            path: '/messages',
+            pageBuilder: (context, state) {
+              return _createPage(context: context, child: Container(color: Colors.red));
+            },
+          ),
+          GoRoute(
+            path: '/friends',
+            pageBuilder: (context, state) {
+              return _createPage(context: context, child: Container(color: Colors.orange));
+            },
+          ),
+          GoRoute(
+            path: '/notification',
+            pageBuilder: (context, state) {
+              return _createPage(context: context, child: Container(color: Colors.green));
+            },
+          ),
+        ],
       ),
-      GoRoute(
-          path: '/messages',
-          pageBuilder: (context, state) {
-            return _createPage(context: context, child: Container(color: Colors.red));
-          }),
-      GoRoute(
-          path: '/friends',
-          pageBuilder: (context, state) {
-            return _createPage(context: context, child: Container(color: Colors.orange));
-          }),
-      GoRoute(
-          path: '/notification',
-          pageBuilder: (context, state) {
-            return _createPage(context: context, child: Container(color: Colors.green));
-          }),
     ],
   );
 
