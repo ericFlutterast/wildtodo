@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/widgets/progress_circular_widget.dart';
 
@@ -23,12 +24,15 @@ class WildAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: context.theme.palette.grayscale.g5,
           size: 16,
         ),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
-          child: SizedBox(
-            width: 42,
-            child: ProgressCircularWidget(
-              percent: 0.70,
+        GestureDetector(
+          onTap: () => GoRouter.of(context).goNamed('/authentication'),
+          child: const Padding(
+            padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
+            child: SizedBox(
+              width: 42,
+              child: ProgressCircularWidget(
+                percent: 0.70,
+              ),
             ),
           ),
         )

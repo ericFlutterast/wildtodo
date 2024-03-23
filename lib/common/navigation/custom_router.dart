@@ -46,6 +46,7 @@ class CustomRouter {
       ),
       GoRoute(
           path: '/authentication',
+          name: '/authentication',
           pageBuilder: (context, state) {
             return _createPage(
               context: context,
