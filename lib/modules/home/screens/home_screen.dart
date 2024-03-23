@@ -5,17 +5,6 @@ import 'package:wildtodo/common/assets/assets.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
-enum HomeBottomTabs {
-  tasks(0),
-  messages(1),
-  friends(2),
-  notifications(3);
-
-  const HomeBottomTabs(this.number);
-
-  final int number;
-}
-
 class HomeNavigationScreen extends StatefulWidget {
   final Widget child;
 
@@ -50,30 +39,47 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.theme.palette.grayscale.g1,
-      drawer: const Drawer(),
-      appBar: const WildAppBar(),
-      body: widget.child,
-      bottomNavigationBar: Container(
-        height: 80,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        decoration: BoxDecoration(color: context.theme.palette.grayscale.g0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            _routes.length,
-            (index) {
-              return _BottomNavigationButton(
-                isSelected: index == _startPage,
-                iconPath: _iconsPath[index],
-                title: _routes[index],
-                onTap: () {
-                  setState(() => _startPage = index);
-                  _changePage(index: index);
-                },
-              );
-            },
+    return SafeArea(
+      top: false,
+      maintainBottomViewPadding: true,
+      child: Scaffold(
+        backgroundColor: context.theme.palette.grayscale.g1,
+        drawer: const Drawer(),
+        appBar: const WildAppBar(),
+        body: widget.child,
+        bottomNavigationBar: Container(
+          height: 80,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          decoration: BoxDecoration(color: context.theme.palette.grayscale.g0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              _routes.length,
+              (index) {
+                return _BottomNavigationButton(
+                  isSelected: index == _startPage,
+                  iconPath: _iconsPath[index],
+                  title: _routes[index],
+                  onTap: () {
+                    setState(() => _startPage = index);
+                    _changePage(index: index);
+                  },
+                );
+              },
+            )..insert(
+                _routes.length ~/ 2,
+                FloatingActionButton(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  backgroundColor: context.theme.palette.accent.primary.vivid,
+                  onPressed: () {},
+                  child: Icon(
+                    Icons.add,
+                    color: context.theme.palette.grayscale.g6,
+                  ),
+                ),
+              ),
           ),
         ),
       ),
@@ -106,6 +112,7 @@ class _BottomNavigationButton extends StatelessWidget {
 
     final TextStyle textStyle = context.theme.typeface.body1.copyWith(
       color: isSelected ? context.theme.palette.grayscale.g6 : context.theme.palette.grayscale.g5,
+      overflow: TextOverflow.ellipsis,
     );
 
     final BoxDecoration? decoration = isSelected
@@ -120,6 +127,7 @@ class _BottomNavigationButton extends StatelessWidget {
     return Container(
       decoration: decoration,
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      width: MediaQuery.of(context).size.width / 5.5,
       child: GestureDetector(
         onTap: onTap,
         child: Column(
