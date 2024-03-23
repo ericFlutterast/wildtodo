@@ -20,25 +20,25 @@ class CustomRouter {
           GoRoute(
             path: '/tasks',
             pageBuilder: (context, state) {
-              return _createPage(context: context, child: Container(color: Colors.pink));
+              return _createPage(context: context, state: state, child: Container(color: Colors.pink));
             },
           ),
           GoRoute(
             path: '/messages',
             pageBuilder: (context, state) {
-              return _createPage(context: context, child: Container(color: Colors.red));
+              return _createPage(context: context, state: state, child: Container(color: Colors.red));
             },
           ),
           GoRoute(
             path: '/friends',
             pageBuilder: (context, state) {
-              return _createPage(context: context, child: Container(color: Colors.orange));
+              return _createPage(context: context, state: state, child: Container(color: Colors.orange));
             },
           ),
           GoRoute(
             path: '/notification',
             pageBuilder: (context, state) {
-              return _createPage(context: context, child: Container(color: Colors.green));
+              return _createPage(context: context, state: state, child: Container(color: Colors.green));
             },
           ),
         ],
@@ -48,16 +48,18 @@ class CustomRouter {
 
   static Page<T> _createPage<T>({
     required BuildContext context,
+    required GoRouterState state,
     required Widget child,
   }) {
     return CustomTransitionPage<T>(
       child: child,
+      key: state.pageKey,
       transitionDuration: const Duration(milliseconds: 500),
       reverseTransitionDuration: const Duration(milliseconds: 500),
-      transitionsBuilder: (context, animation, animationSecondary, child) {
+      transitionsBuilder: (context, animation, animationSecondary, thisChild) {
         return FadeTransition(
           opacity: Tween<double>(begin: 0.3, end: 1).animate(animation),
-          child: child,
+          child: thisChild,
         );
       },
     );
