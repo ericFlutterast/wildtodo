@@ -7,7 +7,7 @@ enum _ButtonType {
   positive,
 }
 
-class UiKitButton extends StatelessWidget {
+class UiKitButton extends StatefulWidget {
   final bool? isLoading;
   final bool? isSmall;
   final bool? inactive;
@@ -69,7 +69,14 @@ class UiKitButton extends StatelessWidget {
           isLoading: isLoading,
         );
 
-  bool get isDisabled => onTap == null;
+  @override
+  State<UiKitButton> createState() => _UiKitButtonState();
+}
+
+class _UiKitButtonState extends State<UiKitButton> {
+  bool _isPressed = false;
+
+  bool get isDisabled => widget.onTap == null;
 
   Color _setColorVivid({
     required BuildContext context,
@@ -94,14 +101,14 @@ class UiKitButton extends StatelessWidget {
   }
 
   Color? _setContentColor({required BuildContext context}) {
-    Color? inactiveColor = inactive == true ? context.theme.palette.grayscale.g5 : null;
+    Color? inactiveColor = widget.inactive == true ? context.theme.palette.grayscale.g5 : null;
 
-    return inactive == true
+    return widget.inactive == true
         ? inactiveColor
         : isDisabled
             ? _setColorVivid(
                 context: context,
-                type: _type,
+                type: widget._type,
               )
             : context.theme.palette.grayscale.g6;
   }
@@ -111,47 +118,53 @@ class UiKitButton extends StatelessWidget {
     final backgroundColor = !isDisabled
         ? _setColorVivid(
             context: context,
-            type: _type,
+            type: widget._type,
           )
         : _setColorMuted(
             context: context,
-            type: _type,
+            type: widget._type,
           );
 
-    Size circularIndicatorSize = Size.fromRadius(isSmall == true ? 6 : 10);
+    Size circularIndicatorSize = Size.fromRadius(widget.isSmall == true ? 6 : 10);
+
+    final contentColor = _isPressed ? context.theme.palette.grayscale.g5 : _setContentColor(context: context);
 
     return GestureDetector(
       onTapDown: (_) {
-        print('start');
+        setState(() => _isPressed = true);
       },
-      onTap: isDisabled ? null : onTap,
+      onTap: isDisabled ? null : widget.onTap,
       onTapUp: (_) {
-        print('end');
+        setState(() => _isPressed = false);
       },
       child: Container(
         decoration: BoxDecoration(
-          color: inactive == true ? context.theme.palette.grayscale.g1 : backgroundColor,
+          color: widget.inactive == true
+              ? context.theme.palette.grayscale.g1
+              : _isPressed
+                  ? _setColorMuted(context: context, type: widget._type)
+                  : backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: isSmall == true ? 8 : 12),
+          padding: EdgeInsets.symmetric(vertical: widget.isSmall == true ? 8 : 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (isLoading == true)
+              if (widget.isLoading == true)
                 SizedBox.fromSize(
                   size: circularIndicatorSize,
                   child: CircularProgressIndicator(
-                    color: _setContentColor(context: context),
+                    color: contentColor,
                     strokeWidth: 2,
                   ),
                 ),
               const SizedBox(width: 6),
               Text(
-                title,
+                widget.title,
                 style: context.theme.typeface.subheading.copyWith(
-                  fontSize: isSmall == true ? 16 : 20,
-                  color: _setContentColor(context: context),
+                  fontSize: widget.isSmall == true ? 16 : 20,
+                  color: contentColor,
                 ),
               ),
             ],
