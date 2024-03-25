@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/widgets/custom_text_input.dart';
+import 'package:wildtodo/modules/widgets/uikit_button.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   const AuthenticationScreen({super.key});
@@ -12,11 +13,18 @@ class AuthenticationScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
               const CustomTextInput(),
-              const CustomTextInput(),
-              ElevatedButton(onPressed: () {}, child: const Text('Войти')),
+              const SizedBox(height: 26),
+              // const CustomTextInput(),
+              UiKitButton.primary(
+                title: 'Войти',
+                isSmall: true,
+                onTap: () {},
+              ),
+              const SizedBox(height: 8),
               TextButton(
                 onPressed: () {},
                 child: const Text('Зарегестрироваться'),
