@@ -10,6 +10,7 @@ enum _ButtonType {
 class UiKitButton extends StatelessWidget {
   final bool? isLoading;
   final bool? isSmall;
+  final bool? inactive;
   final _ButtonType _type;
   final String title;
   final void Function()? onTap;
@@ -18,6 +19,7 @@ class UiKitButton extends StatelessWidget {
     this._type, {
     this.isSmall = false,
     this.isLoading = false,
+    this.inactive = false,
     required this.onTap,
     required this.title,
   });
@@ -25,6 +27,7 @@ class UiKitButton extends StatelessWidget {
   const UiKitButton.primary({
     required String title,
     bool? isSmall,
+    bool? inactive,
     bool? isLoading,
     void Function()? onTap,
   }) : this._(
@@ -32,12 +35,14 @@ class UiKitButton extends StatelessWidget {
           onTap: onTap,
           title: title,
           isSmall: isSmall,
+          inactive: inactive,
           isLoading: isLoading,
         );
 
   const UiKitButton.negative({
     required String title,
     bool? isSmall,
+    bool? inactive,
     bool? isLoading,
     void Function()? onTap,
   }) : this._(
@@ -45,12 +50,14 @@ class UiKitButton extends StatelessWidget {
           onTap: onTap,
           title: title,
           isSmall: isSmall,
+          inactive: inactive,
           isLoading: isLoading,
         );
 
   const UiKitButton.positive({
     required String title,
     bool? isSmall,
+    bool? inactive,
     bool? isLoading,
     void Function()? onTap,
   }) : this._(
@@ -58,6 +65,7 @@ class UiKitButton extends StatelessWidget {
           onTap: onTap,
           title: title,
           isSmall: isSmall,
+          inactive: inactive,
           isLoading: isLoading,
         );
 
@@ -85,6 +93,19 @@ class UiKitButton extends StatelessWidget {
     };
   }
 
+  Color? _setContentColor({required BuildContext context}) {
+    Color? inactiveColor = inactive == true ? context.theme.palette.grayscale.g5 : null;
+
+    return inactive == true
+        ? inactiveColor
+        : isDisabled
+            ? _setColorVivid(
+                context: context,
+                type: _type,
+              )
+            : context.theme.palette.grayscale.g6;
+  }
+
   @override
   Widget build(BuildContext context) {
     final backgroundColor = !isDisabled
@@ -97,39 +118,44 @@ class UiKitButton extends StatelessWidget {
             type: _type,
           );
 
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: isSmall == true ? 8 : 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isLoading == true)
-              SizedBox(
-                height: 14,
-                width: 14,
-                child: CircularProgressIndicator(
-                  color: isDisabled
-                      ? _setColorVivid(
-                          context: context,
-                          type: _type,
-                        )
-                      : context.theme.palette.grayscale.g6,
-                  strokeWidth: 2,
+    Size circularIndicatorSize = Size.fromRadius(isSmall == true ? 6 : 10);
+
+    return GestureDetector(
+      onTapDown: (_) {
+        print('start');
+      },
+      onTap: isDisabled ? null : onTap,
+      onTapUp: (_) {
+        print('end');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: inactive == true ? context.theme.palette.grayscale.g1 : backgroundColor,
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: isSmall == true ? 8 : 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isLoading == true)
+                SizedBox.fromSize(
+                  size: circularIndicatorSize,
+                  child: CircularProgressIndicator(
+                    color: _setContentColor(context: context),
+                    strokeWidth: 2,
+                  ),
+                ),
+              const SizedBox(width: 6),
+              Text(
+                title,
+                style: context.theme.typeface.subheading.copyWith(
+                  fontSize: isSmall == true ? 16 : 20,
+                  color: _setContentColor(context: context),
                 ),
               ),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: context.theme.typeface.subheading.medium.copyWith(
-                fontSize: 20,
-                color: isDisabled ? _setColorVivid(context: context, type: _type) : null,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
