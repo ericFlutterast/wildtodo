@@ -86,7 +86,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () => context.pushNamed('registration'),
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    context.pushNamed('registration');
+                  },
                   child: Text(
                     'Зарегестрироваться',
                     style: TextStyle(
