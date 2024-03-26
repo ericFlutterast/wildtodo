@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:wildtodo/core/core_utils.dart';
 
+typedef ValidationMessage = Map<String, ValidationMessageFunction>?;
+
 class CustomTextInput extends StatelessWidget {
   const CustomTextInput({
     super.key,
@@ -16,6 +18,7 @@ class CustomTextInput extends StatelessWidget {
     this.inputFormatters,
     this.onEditingComplete,
     this.formControl,
+    this.validationMessage,
     this.maxLines = 1,
     this.obscureText = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
@@ -29,6 +32,7 @@ class CustomTextInput extends StatelessWidget {
   final FormControl<Object?>? formControl;
   final TextEditingController? controller;
   final EdgeInsetsGeometry contentPadding;
+  final ValidationMessage validationMessage;
   final List<TextInputFormatter>? inputFormatters;
   final void Function(FormControl<Object?>)? onTap;
   final void Function(FormControl<Object?>)? onChanged;
@@ -38,6 +42,7 @@ class CustomTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReactiveTextField(
+      validationMessages: validationMessage,
       formControl: formControl,
       focusNode: focusNode,
       cursorColor: context.theme.palette.grayscale.g6,
