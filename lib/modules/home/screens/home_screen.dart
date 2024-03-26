@@ -52,6 +52,12 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
             'March 2023',
             style: context.theme.typeface.subheading.bold,
           ),
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: Scaffold.of(context).openDrawer,
+            ),
+          ),
           action: [
             Icon(
               CupertinoIcons.bell_fill,
