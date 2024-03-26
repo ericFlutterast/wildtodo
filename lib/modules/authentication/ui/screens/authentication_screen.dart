@@ -38,43 +38,44 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         },
       ),
       body: SafeArea(
-        child: Expanded(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.08),
-                  child: Signboard(logo: SvgPicture.asset(Assets.navbarFriends)),
-                ),
-                const CustomTextInput(
-                  hintText: 'Логин',
-                ),
-                const SizedBox(height: 16),
-                const CustomTextInput(
-                  hintText: 'Пароль',
-                  obscureText: true,
-                ),
-                const SizedBox(height: 26),
-                // const CustomTextInput(),
-                UiKitButton.primary(
-                  title: 'Войти',
-                  isSmall: true,
-                  onTap: () {},
-                ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Зарегестрироваться',
-                    style: TextStyle(
-                      color: context.theme.palette.accent.primary.vivid,
-                    ),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          reverse: true,
+          //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.08),
+                child: Signboard(logo: SvgPicture.asset(Assets.navbarFriends)),
+              ),
+              const CustomTextInput(
+                hintText: 'Логин',
+              ),
+              const SizedBox(height: 16),
+              const CustomTextInput(
+                hintText: 'Пароль',
+                obscureText: true,
+              ),
+              const SizedBox(height: 26),
+              // const CustomTextInput(),
+              UiKitButton.primary(
+                title: 'Войти',
+                isSmall: true,
+                onTap: () {},
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => context.pushNamed('registration'),
+                child: Text(
+                  'Зарегестрироваться',
+                  style: TextStyle(
+                    color: context.theme.palette.accent.primary.vivid,
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
         ),
       ),
