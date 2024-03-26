@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:wildtodo/core/core_utils.dart';
 
 class CustomTextInput extends StatelessWidget {
-  final int maxLines;
-  final String? labelText;
-  final String? hintText;
-  final bool obscureText;
-  final FocusNode? focusNode;
-  final TextEditingController? controller;
-  final EdgeInsetsGeometry contentPadding;
-  final List<TextInputFormatter>? inputFormatters;
-  final void Function()? onTap;
-  final void Function(String?)? onSaved;
-  final void Function(String)? onChanged;
-  final void Function()? onEditingComplete;
-  final void Function(String)? onFieldSubmitted;
-  final void Function(PointerDownEvent)? onTapOutside;
-
   const CustomTextInput({
     super.key,
     this.onTap,
-    this.onSaved,
     this.hintText,
     this.focusNode,
     this.labelText,
@@ -29,16 +14,31 @@ class CustomTextInput extends StatelessWidget {
     this.controller,
     this.onTapOutside,
     this.inputFormatters,
-    this.onFieldSubmitted,
     this.onEditingComplete,
+    this.formControl,
     this.maxLines = 1,
     this.obscureText = false,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
   });
 
+  final int maxLines;
+  final String? labelText;
+  final String? hintText;
+  final bool obscureText;
+  final FocusNode? focusNode;
+  final FormControl<Object?>? formControl;
+  final TextEditingController? controller;
+  final EdgeInsetsGeometry contentPadding;
+  final List<TextInputFormatter>? inputFormatters;
+  final void Function(FormControl<Object?>)? onTap;
+  final void Function(FormControl<Object?>)? onChanged;
+  final void Function(FormControl<Object?>)? onEditingComplete;
+  final void Function(PointerDownEvent)? onTapOutside;
+
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return ReactiveTextField(
+      formControl: formControl,
       focusNode: focusNode,
       cursorColor: context.theme.palette.grayscale.g6,
       style: context.theme.typeface.body1,
@@ -48,8 +48,6 @@ class CustomTextInput extends StatelessWidget {
       onTap: onTap,
       onChanged: onChanged,
       onEditingComplete: onEditingComplete,
-      onSaved: onSaved,
-      onFieldSubmitted: onFieldSubmitted,
       onTapOutside: onTapOutside,
       inputFormatters: inputFormatters,
       decoration: InputDecoration(
