@@ -17,13 +17,18 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  //TODO: допилить форму
-  final _form = FormGroup({
-    'email': FormControl<String>(validators: [
-      Validators.required,
-      Validators.pattern(''),
-    ]),
-    'password': FormControl<String>(validators: [Validators.required]),
+  final _emailFormControl = FormControl<String>(validators: [
+    Validators.required,
+    Validators.email,
+  ]);
+
+  final _passwordFormControl = FormControl<String>(validators: [
+    Validators.required,
+  ]);
+
+  late final _form = FormGroup({
+    'email': _emailFormControl,
+    'password': _passwordFormControl,
   });
 
   @override
@@ -38,34 +43,53 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         },
       ),
       body: SafeArea(
-        child: Expanded(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          reverse: true,
+          //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: ReactiveForm(
+            formGroup: _form,
             child: Column(
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.08),
                   child: Signboard(logo: SvgPicture.asset(Assets.navbarFriends)),
                 ),
-                const CustomTextInput(
+                CustomTextInput(
                   hintText: 'Логин',
+                  formControl: _emailFormControl,
+                  validationMessage: {
+                    'required': (_) => 'Обязательное поле',
+                    'email': (_) => 'Не корректный формат',
+                  },
                 ),
                 const SizedBox(height: 16),
-                const CustomTextInput(
+                CustomTextInput(
                   hintText: 'Пароль',
                   obscureText: true,
+                  formControl: _passwordFormControl,
+                  validationMessage: {
+                    'required': (_) => 'Обязательное поле',
+                  },
                 ),
                 const SizedBox(height: 26),
                 // const CustomTextInput(),
-                UiKitButton.primary(
-                  title: 'Войти',
-                  isSmall: true,
-                  onTap: () {},
+                ReactiveFormConsumer(
+                  builder: (context, form, child) {
+                    return UiKitButton.primary(
+                      title: 'Войти',
+                      isSmall: true,
+                      onTap: form.valid ? () {} : null,
+                    );
+                  },
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    context.pushNamed('registration');
+                  },
                   child: Text(
                     'Зарегестрироваться',
                     style: TextStyle(
@@ -73,6 +97,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
               ],
             ),
           ),
