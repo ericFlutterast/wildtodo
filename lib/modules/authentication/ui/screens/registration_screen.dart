@@ -96,13 +96,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     },
                   ),
                   const SizedBox(height: 26),
-                  UiKitButton.primary(
-                    title: 'Зарегистрироваться',
-                    isSmall: true,
-                    onTap: () {
-                      //TODO:
-                    },
-                  ),
+                  ReactiveFormConsumer(builder: (context, form, child) {
+                    return UiKitButton.primary(
+                      title: 'Зарегистрироваться',
+                      isSmall: true,
+                      onTap: form.valid
+                          ? () {
+                              //TODO:
+                            }
+                          : null,
+                    );
+                  }),
                   const SizedBox(height: 16),
                 ],
               ),
