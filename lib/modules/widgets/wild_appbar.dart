@@ -10,11 +10,13 @@ class WildAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.action,
     this.leading,
     this.leadingCallBack,
+    this.backgroundColor,
   });
 
   final Widget? title;
   final Widget? leading;
   final List<Widget>? action;
+  final Color? backgroundColor;
   final void Function()? leadingCallBack;
 
   @override
@@ -24,7 +26,7 @@ class WildAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       iconTheme: IconThemeData(color: context.theme.palette.grayscale.g5),
-      backgroundColor: context.theme.palette.grayscale.g1,
+      backgroundColor: backgroundColor ?? context.theme.palette.grayscale.g1,
       leading: leading ??
           GestureDetector(
             onTap: leadingCallBack,

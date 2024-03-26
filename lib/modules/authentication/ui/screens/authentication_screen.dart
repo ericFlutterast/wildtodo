@@ -16,6 +16,7 @@ class AuthenticationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.theme.palette.grayscale.g1,
       appBar: WildAppBar(
+        backgroundColor: context.theme.palette.grayscale.g1,
         leadingCallBack: context.pop,
       ),
       body: SafeArea(
