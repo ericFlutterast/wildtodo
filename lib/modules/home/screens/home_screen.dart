@@ -64,12 +64,15 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
               color: context.theme.palette.grayscale.g5,
               size: 16,
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
-              child: SizedBox(
-                width: 42,
-                child: ProgressCircularWidget(
-                  percent: 0.70,
+            GestureDetector(
+              onTap: () => context.pushNamed('/authentication'),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
+                child: SizedBox(
+                  width: 42,
+                  child: ProgressCircularWidget(
+                    percent: 0.70,
+                  ),
                 ),
               ),
             )

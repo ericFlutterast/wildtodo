@@ -48,9 +48,7 @@ class CustomRouter {
           path: '/authentication',
           name: '/authentication',
           pageBuilder: (context, state) {
-            return _createPage(
-              context: context,
-              state: state,
+            return _createCupertinoPage(
               child: const AuthenticationScreen(),
             );
           }),

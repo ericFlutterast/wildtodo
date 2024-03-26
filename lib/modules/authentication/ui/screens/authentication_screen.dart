@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wildtodo/common/assets/assets.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/widgets/custom_text_input.dart';
 import 'package:wildtodo/modules/widgets/signboard.dart';
 import 'package:wildtodo/modules/widgets/uikit_button.dart';
+import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   const AuthenticationScreen({super.key});
@@ -13,6 +15,9 @@ class AuthenticationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.palette.grayscale.g1,
+      appBar: WildAppBar(
+        leadingCallBack: context.pop,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
