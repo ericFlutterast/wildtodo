@@ -52,18 +52,27 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
             'March 2023',
             style: context.theme.typeface.subheading.bold,
           ),
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: Scaffold.of(context).openDrawer,
+            ),
+          ),
           action: [
             Icon(
               CupertinoIcons.bell_fill,
               color: context.theme.palette.grayscale.g5,
               size: 16,
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
-              child: SizedBox(
-                width: 42,
-                child: ProgressCircularWidget(
-                  percent: 0.70,
+            GestureDetector(
+              onTap: () => context.pushNamed('/authentication'),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
+                child: SizedBox(
+                  width: 42,
+                  child: ProgressCircularWidget(
+                    percent: 0.70,
+                  ),
                 ),
               ),
             )
