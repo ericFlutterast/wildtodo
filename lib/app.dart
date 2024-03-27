@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wildtodo/common/dio/network_client.dart';
+import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
+import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository.dart';
+import 'package:wildtodo/modules/authentication/ui/widgets/authentication_widget.dart';
 
 class AppRoot extends StatelessWidget {
   final GoRouter router;
@@ -14,7 +18,14 @@ class AppRoot extends StatelessWidget {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
-        return child!;
+        return AuthenticationWidget(
+          bloc: AuthenticationBloc(
+            repository: AuthenticationRepository(
+              networkClient: NetworkClient(),
+            ),
+          ),
+          child: child!,
+        );
       },
     );
   }
