@@ -1,4 +1,5 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository_interface.dart';
@@ -42,6 +43,7 @@ sealed class AuthenticationState with _$AuthenticationState {
   bool get isProgress => maybeMap<bool>(
         authenticated: (_) => false,
         unAuthenticated: (_) => false,
+        error: (_) => false,
         orElse: () => true,
       );
 
@@ -140,12 +142,18 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       emit(AuthenticationState.inProgress(user: state.user));
       final uid = await _repository.createUser(email: event.email, password: event.password);
-      _login(_$LoginAuthenticationEvent(uid: uid, email: event.email, password: event.password), emit);
-    } on FormatException {
+      // _login(_$LoginAuthenticationEvent(uid: uid, email: event.email, password: event.password), emit);
+    } on DioException catch (error) {
       //Network error handler
-      emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
+      emit(
+        AuthenticationState.error(
+          user: state.user,
+          message:
+              'Не удалось зарегистрироваться, проверьте подключение к интернету, код: ${error.response!.statusCode}',
+        ),
+      );
     } on Object catch (error, stackTracer) {
-      emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
+      emit(AuthenticationState.error(user: state.user, message: 'Ошибка регистрации'));
       rethrow;
     }
   }

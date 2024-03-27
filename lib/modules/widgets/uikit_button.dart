@@ -8,7 +8,7 @@ enum _ButtonType {
 }
 
 class UiKitButton extends StatefulWidget {
-  final bool? isLoading;
+  final bool isLoading;
   final bool? isSmall;
   final bool? inactive;
   final _ButtonType _type;
@@ -36,14 +36,14 @@ class UiKitButton extends StatefulWidget {
           title: title,
           isSmall: isSmall,
           inactive: inactive,
-          isLoading: isLoading,
+          isLoading: isLoading ?? false,
         );
 
   const UiKitButton.negative({
     required String title,
     bool? isSmall,
     bool? inactive,
-    bool? isLoading,
+    bool isLoading = false,
     void Function()? onTap,
   }) : this._(
           _ButtonType.negative,
@@ -58,7 +58,7 @@ class UiKitButton extends StatefulWidget {
     required String title,
     bool? isSmall,
     bool? inactive,
-    bool? isLoading,
+    bool isLoading = false,
     void Function()? onTap,
   }) : this._(
           _ButtonType.positive,
@@ -69,14 +69,14 @@ class UiKitButton extends StatefulWidget {
           isLoading: isLoading,
         );
 
+  bool get isDisabled => onTap == null || isLoading;
+
   @override
   State<UiKitButton> createState() => _UiKitButtonState();
 }
 
 class _UiKitButtonState extends State<UiKitButton> {
   bool _isPressed = false;
-
-  bool get isDisabled => widget.onTap == null;
 
   Color _setColorVivid({
     required BuildContext context,
@@ -105,7 +105,7 @@ class _UiKitButtonState extends State<UiKitButton> {
 
     return widget.inactive == true
         ? inactiveColor
-        : isDisabled
+        : widget.isDisabled
             ? _setColorVivid(
                 context: context,
                 type: widget._type,
@@ -115,7 +115,7 @@ class _UiKitButtonState extends State<UiKitButton> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = !isDisabled
+    final backgroundColor = !widget.isDisabled
         ? _setColorVivid(
             context: context,
             type: widget._type,
@@ -130,13 +130,22 @@ class _UiKitButtonState extends State<UiKitButton> {
     final contentColor = _isPressed ? context.theme.palette.grayscale.g5 : _setContentColor(context: context);
 
     return GestureDetector(
-      onTapDown: (_) {
-        setState(() => _isPressed = true);
-      },
-      onTap: isDisabled ? null : widget.onTap,
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-      },
+      onTapDown: widget.isDisabled
+          ? null
+          : (_) {
+              setState(() => _isPressed = true);
+            },
+      onTap: widget.isDisabled
+          ? null
+          : () {
+              widget.onTap?.call();
+              setState(() {});
+            },
+      onTapUp: widget.isDisabled
+          ? null
+          : (_) {
+              setState(() => _isPressed = false);
+            },
       child: Container(
         decoration: BoxDecoration(
           color: widget.inactive == true
