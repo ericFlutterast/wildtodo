@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:wildtodo/core/core_utils.dart';
+import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
 import 'package:wildtodo/modules/widgets/custom_text_input.dart';
 import 'package:wildtodo/modules/widgets/signboard.dart';
 import 'package:wildtodo/modules/widgets/uikit_button.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({super.key});
+  const RegistrationScreen({
+    super.key,
+    required this.bloc,
+  });
+
+  final AuthenticationBloc bloc;
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
+
+  static createPage(
+    BuildContext context, {
+    required AuthenticationBloc bloc,
+  }) {
+    return BlocProvider<AuthenticationBloc>.value(
+      value: bloc,
+      child: RegistrationScreen(bloc: bloc),
+    );
+  }
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
@@ -35,6 +52,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     },
     validators: [Validators.mustMatch('password', 'passwordConfirm')],
   );
+
+  @override
+  void dispose() {
+    widget.bloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +124,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       title: 'Зарегистрироваться',
                       isSmall: true,
                       onTap: form.valid
-                          ? () {
-                              //TODO:
-                            }
+                          ? () => context.read<AuthenticationBloc>().add(
+                                AuthenticationEvent.createUser(
+                                  email: _emailFormControl.value!,
+                                  password: _passwordConfirmFormControl.value!,
+                                ),
+                              )
                           : null,
                     );
                   }),

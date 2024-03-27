@@ -63,7 +63,12 @@ class CustomRouter {
             path: 'registration',
             name: 'registration',
             pageBuilder: (context, state) {
-              return _createCupertinoPage(child: const RegistrationScreen());
+              return _createCupertinoPage(
+                child: RegistrationScreen.createPage(
+                  context,
+                  bloc: context.authenticationBloc,
+                ),
+              );
             },
           ),
         ],
