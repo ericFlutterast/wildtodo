@@ -1,22 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/common/assets/assets.dart';
 import 'package:wildtodo/core/core_utils.dart';
+import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
 import 'package:wildtodo/modules/widgets/progress_circular_widget.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class HomeNavigationScreen extends StatefulWidget {
   final Widget child;
+  final AuthenticationBloc bloc;
 
   const HomeNavigationScreen({
+    required this.bloc,
     required this.child,
     super.key,
   });
 
   @override
   State<HomeNavigationScreen> createState() => _HomeNavigationScreenState();
+
+  static Widget createPage({
+    required Widget child,
+    required BuildContext context,
+    required AuthenticationBloc bloc,
+  }) {
+    return BlocProvider<AuthenticationBloc>.value(
+      value: bloc,
+      child: HomeNavigationScreen(bloc: bloc, child: child),
+    );
+  }
 }
 
 class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
@@ -30,13 +45,14 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
     Assets.navbarNotification,
   ];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void _changePage({required int index}) {
     GoRouter.of(context).go('/${_routes[index]}');
+  }
+
+  @override
+  void dispose() {
+    widget.bloc.close();
+    super.dispose();
   }
 
   @override
@@ -59,23 +75,46 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
             ),
           ),
           action: [
-            Icon(
-              CupertinoIcons.bell_fill,
-              color: context.theme.palette.grayscale.g5,
-              size: 16,
-            ),
-            GestureDetector(
-              onTap: () => context.pushNamed('/authentication'),
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
-                child: SizedBox(
-                  width: 42,
-                  child: ProgressCircularWidget(
-                    percent: 0.70,
+            BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              bloc: widget.bloc,
+              builder: (context, state) {
+                return state.maybeMap(
+                  authenticated: (state) {
+                    return Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.bell_fill,
+                          color: context.theme.palette.grayscale.g5,
+                          size: 16,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            //TODO: Переход в профиль
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
+                            child: SizedBox(
+                              width: 42,
+                              child: ProgressCircularWidget(
+                                percent: 0.70,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                  orElse: () => IconButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    onPressed: () => context.pushNamed('/authentication'),
+                    icon: const Icon(
+                      Icons.person,
+                      size: 35,
+                    ),
                   ),
-                ),
-              ),
-            )
+                );
+              },
+            ),
           ],
         ),
         body: widget.child,

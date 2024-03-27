@@ -3,11 +3,11 @@ import 'package:wildtodo/modules/authentication/data/repositories/authentication
 import 'package:wildtodo/modules/authentication/models/user.dart';
 
 class AuthenticationRepository implements IAuthenticationRepository {
-  late final NetworkClient _networkClient;
+  final NetworkClient _networkClient;
 
-  AuthenticationRepository() {
-    _networkClient = NetworkClient();
-  }
+  AuthenticationRepository({
+    required NetworkClient networkClient,
+  }) : _networkClient = networkClient;
 
   @override
   Future<String> createUser({required String email, required String password}) async {
