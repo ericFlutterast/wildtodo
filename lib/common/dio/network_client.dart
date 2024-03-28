@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fk_user_agent/fk_user_agent.dart';
+import 'package:wildtodo/common/device_info/device_info.dart';
 
 sealed class RequestType {
   final String path;
@@ -84,11 +85,14 @@ class NetworkClient {
     _dio.interceptors.addAll([
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          final deviceInfo = DeviceInfo.init;
+
           final userAgent = FkUserAgent.userAgent;
+          final fingerPrint = await deviceInfo.fingerPrint();
 
           options.headers.addAll({
             'User-Agent': userAgent,
-            'X-Fingerprint': 'max_cum',
+            'X-Fingerprint': fingerPrint,
           });
 
           return handler.next(options);
