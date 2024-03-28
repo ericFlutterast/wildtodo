@@ -140,7 +140,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       emit(AuthenticationState.inProgress(user: state.user));
 
-      final uid = await _repository.createUser(email: event.email, password: event.password);
+      await _repository.createUser(email: event.email, password: event.password);
       final newUser = await _repository.login(email: event.email, password: event.password);
 
       emit(AuthenticationState.success(user: newUser));
