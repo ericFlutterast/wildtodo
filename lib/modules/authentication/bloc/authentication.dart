@@ -14,7 +14,6 @@ sealed class AuthenticationEvent with _$AuthenticationEvent {
 
   ///Залогинится
   const factory AuthenticationEvent.login({
-    required String uid,
     required String email,
     required String password,
   }) = _$LoginAuthenticationEvent;
@@ -76,8 +75,6 @@ sealed class AuthenticationState with _$AuthenticationState {
 
 //блок
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final IAuthenticationRepository _repository;
-
   AuthenticationBloc({
     final User? user,
     required IAuthenticationRepository repository,
@@ -98,13 +95,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     );
   }
 
+  final IAuthenticationRepository _repository;
+
   Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
-      final newUser = await _repository.login(email: event.email, password: event.password, uid: event.uid);
+      final newUser = await _repository.login(email: event.email, password: event.password);
       emit(AuthenticationState.success(user: newUser));
-    } on FormatException {
-      //Network error handler
+    } on DioException catch (error) {
       emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
     } on Object catch (error, stackTracer) {
       emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
@@ -141,20 +139,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _createUser(_$CreateUserAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
+
       final uid = await _repository.createUser(email: event.email, password: event.password);
-      // _login(_$LoginAuthenticationEvent(uid: uid, email: event.email, password: event.password), emit);
-    } on DioException catch (error) {
-      //Network error handler
+      final newUser = await _repository.login(email: event.email, password: event.password);
+
+      emit(AuthenticationState.success(user: newUser));
+    } on DioException catch (_) {
       emit(
         AuthenticationState.error(
           user: state.user,
-          message:
-              'Не удалось зарегистрироваться, проверьте подключение к интернету, код: ${error.response!.statusCode}',
+          message: 'Не удалось зарегистрироваться, проверьте подключение к интернету',
         ),
       );
     } on Object catch (error, stackTracer) {
       emit(AuthenticationState.error(user: state.user, message: 'Ошибка регистрации'));
       rethrow;
+    } finally {
+      if (state.user.isAuthenticated) {
+        emit(AuthenticationState.authenticated(user: state.user));
+      } else {
+        emit(const AuthenticationState.unAuthenticated());
+      }
     }
   }
 }
