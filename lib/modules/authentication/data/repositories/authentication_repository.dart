@@ -25,10 +25,11 @@ class AuthenticationRepository implements IAuthenticationRepository {
   }
 
   @override
-  Future<User> login({required String uid, required String email, required String password}) async {
+  Future<User> login({required String email, required String password}) async {
+    //TODO: распарсить токены и получить данные о пользователе
     final response = await _networkClient.request(
       type: Post(
-        path: '/api/v1/users/$uid/sessions/',
+        path: '/api/v1/sessions/',
         data: {
           "email": email,
           "password": password,
@@ -37,7 +38,14 @@ class AuthenticationRepository implements IAuthenticationRepository {
     );
 
     //TODO: Распарсить response в юзера
-    return const User.notAuthenticatedUser();
+    return const User.authenticatedUser(
+      lastName: '',
+      email: '',
+      fistName: '',
+      phoneNumber: '',
+      photoUrl: '',
+      uid: '1111',
+    );
   }
 
   @override
