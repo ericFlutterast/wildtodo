@@ -55,11 +55,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             state.mapOrNull(
-              authenticated: (state) {},
+              authenticated: (state) {
+                context.go('/tasks');
+                setState(() => _isShowLoading = false);
+              },
               error: (state) {
-                setState(() {
-                  _isShowLoading = false;
-                });
+                setState(() => _isShowLoading = false);
+
+                //TODO: Чтобы дважды не отображался снекбар, выяснить проблему задвоения
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Container(
