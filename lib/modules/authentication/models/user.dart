@@ -1,6 +1,6 @@
 //абстрактный класс юзера
 abstract interface class User {
-  const factory User.notAuthenticatedUser() = _NotAuthenticatedUser;
+  const factory User.notAuthenticatedUser() = NotAuthenticatedUser;
 
   const factory User.authenticatedUser({
     required final String lastName,
@@ -9,21 +9,21 @@ abstract interface class User {
     required final String phoneNumber,
     required final String photoUrl,
     required final String uid,
-  }) = _AuthenticatedUser;
+  }) = AuthenticatedUser;
 
   bool get isAuthenticated;
   bool get isNotAuthenticated;
   User? get authenticatedOrNull;
 
   T when<T extends Object?>({
-    required final Function(_AuthenticatedUser user) authenticated,
+    required final Function(AuthenticatedUser user) authenticated,
     required final Function() notAuthenticated,
   });
 }
 
 //реализация не аунтифицированного пользователя
-class _NotAuthenticatedUser implements User {
-  const _NotAuthenticatedUser();
+class NotAuthenticatedUser implements User {
+  const NotAuthenticatedUser();
 
   @override
   bool get isAuthenticated => false;
@@ -36,14 +36,14 @@ class _NotAuthenticatedUser implements User {
 
   @override
   T when<T extends Object?>({
-    required Function(_AuthenticatedUser user) authenticated,
+    required Function(AuthenticatedUser user) authenticated,
     required Function() notAuthenticated,
   }) =>
       notAuthenticated();
 }
 
 //реализация аунтифицированного пользователя
-class _AuthenticatedUser implements User {
+class AuthenticatedUser implements User {
   final String fistName;
   final String lastName;
   final String phoneNumber;
@@ -51,7 +51,7 @@ class _AuthenticatedUser implements User {
   final String photoUrl;
   final String email;
 
-  const _AuthenticatedUser({
+  const AuthenticatedUser({
     required this.lastName,
     required this.email,
     required this.fistName,
@@ -71,7 +71,7 @@ class _AuthenticatedUser implements User {
 
   @override
   T when<T extends Object?>({
-    required Function(_AuthenticatedUser user) authenticated,
+    required Function(AuthenticatedUser user) authenticated,
     required Function() notAuthenticated,
   }) =>
       authenticated(this);

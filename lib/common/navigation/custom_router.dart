@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
-import 'package:wildtodo/modules/authentication/ui/widgets/authentication_widget.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
@@ -17,11 +16,7 @@ class CustomRouter {
       ShellRoute(
         navigatorKey: _bottomNavigationKey,
         builder: (context, state, child) {
-          return HomeNavigationScreen.createPage(
-            context: context,
-            child: child,
-            bloc: context.authenticationBloc,
-          );
+          return HomeNavigationScreen(child: child);
         },
         routes: [
           GoRoute(
@@ -63,12 +58,7 @@ class CustomRouter {
             path: 'registration',
             name: 'registration',
             pageBuilder: (context, state) {
-              return _createCupertinoPage(
-                child: RegistrationScreen.createPage(
-                  context,
-                  bloc: context.authenticationBloc,
-                ),
-              );
+              return _createCupertinoPage(child: const RegistrationScreen());
             },
           ),
         ],

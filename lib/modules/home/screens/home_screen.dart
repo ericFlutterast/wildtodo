@@ -10,28 +10,15 @@ import 'package:wildtodo/modules/widgets/progress_circular_widget.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class HomeNavigationScreen extends StatefulWidget {
-  final Widget child;
-  final AuthenticationBloc bloc;
-
   const HomeNavigationScreen({
-    required this.bloc,
     required this.child,
     super.key,
   });
 
+  final Widget child;
+
   @override
   State<HomeNavigationScreen> createState() => _HomeNavigationScreenState();
-
-  static Widget createPage({
-    required Widget child,
-    required BuildContext context,
-    required AuthenticationBloc bloc,
-  }) {
-    return BlocProvider<AuthenticationBloc>.value(
-      value: bloc,
-      child: HomeNavigationScreen(bloc: bloc, child: child),
-    );
-  }
 }
 
 class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
@@ -50,107 +37,112 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
   }
 
   @override
-  void dispose() {
-    widget.bloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
       maintainBottomViewPadding: true,
-      child: Scaffold(
-        backgroundColor: context.theme.palette.grayscale.g1,
-        drawer: const Drawer(),
-        appBar: WildAppBar(
-          title: Text(
-            'March 2023',
-            style: context.theme.typeface.subheading.bold,
-          ),
-          leading: Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: Scaffold.of(context).openDrawer,
+      child: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listenWhen: (prevState, newState) => prevState != newState,
+        listener: (context, state) {
+          state.mapOrNull(
+            error: (state) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+              ),
             ),
-          ),
-          action: [
-            BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              bloc: widget.bloc,
-              builder: (context, state) {
-                return state.maybeMap(
-                  authenticated: (state) {
-                    return Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.bell_fill,
-                          color: context.theme.palette.grayscale.g5,
-                          size: 16,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            //TODO: Переход в профиль
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
-                            child: SizedBox(
-                              width: 42,
-                              child: ProgressCircularWidget(
-                                percent: 0.70,
+          );
+        },
+        child: Scaffold(
+          backgroundColor: context.theme.palette.grayscale.g1,
+          drawer: const Drawer(),
+          appBar: WildAppBar(
+            title: Text(
+              'March 2023',
+              style: context.theme.typeface.subheading.bold,
+            ),
+            leading: Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: Scaffold.of(context).openDrawer,
+              ),
+            ),
+            action: [
+              BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                builder: (context, state) {
+                  return state.maybeMap(
+                    authenticated: (state) {
+                      return Row(
+                        children: [
+                          Icon(
+                            CupertinoIcons.bell_fill,
+                            color: context.theme.palette.grayscale.g5,
+                            size: 16,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              //TODO: Переход в профиль
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
+                              child: SizedBox(
+                                width: 42,
+                                child: ProgressCircularWidget(
+                                  percent: 0.70,
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                  orElse: () => IconButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    onPressed: () => context.pushNamed('/authentication'),
-                    icon: const Icon(
-                      Icons.person,
-                      size: 35,
+                          )
+                        ],
+                      );
+                    },
+                    orElse: () => IconButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      onPressed: () => context.pushNamed('/authentication'),
+                      icon: const Icon(
+                        Icons.person,
+                        size: 35,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: widget.child,
+          bottomNavigationBar: Container(
+            height: 80,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(color: context.theme.palette.grayscale.g0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                _routes.length,
+                (index) {
+                  return _BottomNavigationButton(
+                    isSelected: index == _startPage,
+                    iconPath: _iconsPath[index],
+                    title: _routes[index],
+                    onTap: () {
+                      setState(() => _startPage = index);
+                      _changePage(index: index);
+                    },
+                  );
+                },
+              )..insert(
+                  _routes.length ~/ 2,
+                  FloatingActionButton(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                    ),
+                    backgroundColor: context.theme.palette.accent.primary.vivid,
+                    onPressed: () {},
+                    child: Icon(
+                      Icons.add,
+                      color: context.theme.palette.grayscale.g6,
                     ),
                   ),
-                );
-              },
-            ),
-          ],
-        ),
-        body: widget.child,
-        bottomNavigationBar: Container(
-          height: 80,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          decoration: BoxDecoration(color: context.theme.palette.grayscale.g0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              _routes.length,
-              (index) {
-                return _BottomNavigationButton(
-                  isSelected: index == _startPage,
-                  iconPath: _iconsPath[index],
-                  title: _routes[index],
-                  onTap: () {
-                    setState(() => _startPage = index);
-                    _changePage(index: index);
-                  },
-                );
-              },
-            )..insert(
-                _routes.length ~/ 2,
-                FloatingActionButton(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                  ),
-                  backgroundColor: context.theme.palette.accent.primary.vivid,
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.add,
-                    color: context.theme.palette.grayscale.g6,
-                  ),
                 ),
-              ),
+            ),
           ),
         ),
       ),
