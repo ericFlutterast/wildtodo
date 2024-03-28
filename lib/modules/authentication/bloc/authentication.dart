@@ -26,6 +26,9 @@ sealed class AuthenticationEvent with _$AuthenticationEvent {
     required String email,
     required String password,
   }) = _$CreateUserAuthenticationEvent;
+
+  ///Проверка: авторизован пользователь или нет
+  const factory AuthenticationEvent.init() = _$InitAuthenticationEvent;
 }
 
 //состояния
@@ -87,6 +90,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         ) {
     on<AuthenticationEvent>(
       (event, emit) => event.map(
+        init: (event) => _init(event, emit),
         login: (event) => _login(event, emit),
         logout: (event) => _logout(event, emit),
         createUser: (event) => _createUser(event, emit),
@@ -96,6 +100,24 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   final IAuthenticationRepository _repository;
+
+  Future<void> _init(_$InitAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      emit(AuthenticationState.inProgress(user: state.user));
+      final result = await _repository.init();
+
+      if (result) {
+        emit(AuthenticationState.authenticated(user: state.user));
+      } else {
+        emit(AuthenticationState.unAuthenticated(user: state.user));
+      }
+    } catch (_) {
+      emit(const AuthenticationState.error(
+        message: 'Не удалось войти в профиль',
+        user: User.notAuthenticatedUser(),
+      ));
+    }
+  }
 
   Future<void> _login(_$LoginAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {

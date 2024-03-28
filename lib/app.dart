@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/common/dio/network_client.dart';
+import 'package:wildtodo/common/secure_storage/secure_storage.dart';
 import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
 import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository.dart';
 
@@ -35,9 +36,10 @@ class _AppRootState extends State<AppRoot> {
         return BlocProvider(
           create: (context) => AuthenticationBloc(
             repository: AuthenticationRepository(
+              secureStorage: SecureStorage.instance,
               networkClient: NetworkClient(),
             ),
-          ),
+          )..add(const AuthenticationEvent.init()),
           child: child!,
         );
       },
