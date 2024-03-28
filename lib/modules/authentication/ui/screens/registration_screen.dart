@@ -10,25 +10,10 @@ import 'package:wildtodo/modules/widgets/uikit_button.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({
-    super.key,
-    required this.bloc,
-  });
-
-  final AuthenticationBloc bloc;
+  const RegistrationScreen({super.key});
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
-
-  static createPage(
-    BuildContext context, {
-    required AuthenticationBloc bloc,
-  }) {
-    return BlocProvider<AuthenticationBloc>.value(
-      value: bloc,
-      child: RegistrationScreen(bloc: bloc),
-    );
-  }
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
@@ -56,12 +41,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   );
 
   @override
-  void dispose() {
-    widget.bloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.theme.palette.grayscale.g1,
@@ -75,18 +54,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: SafeArea(
         child: BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
-            state.mapOrNull(error: (state) {
-              setState(() {
-                _isShowLoading = false;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Container(
-                    child: Text(state.message),
+            state.mapOrNull(
+              authenticated: (state) {},
+              error: (state) {
+                setState(() {
+                  _isShowLoading = false;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Container(
+                      child: Text(state.message),
+                    ),
                   ),
-                ),
-              );
-            });
+                );
+              },
+            );
           },
           child: SingleChildScrollView(
             reverse: true,
