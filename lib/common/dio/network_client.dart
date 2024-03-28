@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fk_user_agent/fk_user_agent.dart';
 
 sealed class RequestType {
   final String path;
@@ -80,6 +81,20 @@ class NetworkClient {
 
   NetworkClient() {
     _dio = Dio(BaseOptions(baseUrl: _baseUrl));
+    _dio.interceptors.addAll([
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final userAgent = FkUserAgent.userAgent;
+
+          options.headers.addAll({
+            'User-Agent': userAgent,
+            'X-Fingerprint': 'max_cum',
+          });
+
+          return handler.next(options);
+        },
+      ),
+    ]);
   }
 
   ///в [type] следует передавать объеты одноименные типам запросов Get(), Put() и т.д.
