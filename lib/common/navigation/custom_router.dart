@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
-import 'package:wildtodo/modules/authentication/ui/widgets/authentication_widget.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
@@ -20,7 +21,7 @@ class CustomRouter {
           return HomeNavigationScreen.createPage(
             context: context,
             child: child,
-            bloc: context.authenticationBloc,
+            bloc: BlocProvider.of<AuthenticationBloc>(context),
           );
         },
         routes: [
@@ -66,7 +67,7 @@ class CustomRouter {
               return _createCupertinoPage(
                 child: RegistrationScreen.createPage(
                   context,
-                  bloc: context.authenticationBloc,
+                  bloc: BlocProvider.of<AuthenticationBloc>(context),
                 ),
               );
             },
