@@ -10,28 +10,15 @@ import 'package:wildtodo/modules/widgets/progress_circular_widget.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class HomeNavigationScreen extends StatefulWidget {
-  final Widget child;
-  final AuthenticationBloc bloc;
-
   const HomeNavigationScreen({
-    required this.bloc,
     required this.child,
     super.key,
   });
 
+  final Widget child;
+
   @override
   State<HomeNavigationScreen> createState() => _HomeNavigationScreenState();
-
-  static Widget createPage({
-    required Widget child,
-    required BuildContext context,
-    required AuthenticationBloc bloc,
-  }) {
-    return BlocProvider<AuthenticationBloc>.value(
-      value: bloc,
-      child: HomeNavigationScreen(bloc: bloc, child: child),
-    );
-  }
 }
 
 class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
@@ -47,12 +34,6 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
 
   void _changePage({required int index}) {
     GoRouter.of(context).go('/${_routes[index]}');
-  }
-
-  @override
-  void dispose() {
-    widget.bloc.close();
-    super.dispose();
   }
 
   @override
@@ -76,7 +57,6 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
           ),
           action: [
             BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              bloc: widget.bloc,
               builder: (context, state) {
                 return state.maybeMap(
                   authenticated: (state) {
