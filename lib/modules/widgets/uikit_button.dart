@@ -13,20 +13,27 @@ enum ButtonState {
   loading,
 }
 
+enum ButtonSettings {
+  small,
+  standard,
+}
+
 class UiKitButton extends StatefulWidget {
   const UiKitButton({
     super.key,
-    this.isSmall = false,
     required this.onTap,
     required this.title,
-    this.state = ButtonState.active,
+    this.isSmall = false,
     this.type = ButtonType.primary,
+    this.state = ButtonState.active,
+    this.settings = ButtonSettings.standard,
   });
 
   final bool isSmall;
   final String title;
   final ButtonType type;
   final ButtonState state;
+  final ButtonSettings settings;
   final void Function()? onTap;
 
   bool get isDisabled => onTap == null || state == ButtonState.loading;
@@ -39,6 +46,13 @@ class UiKitButton extends StatefulWidget {
 
 class _UiKitButtonState extends State<UiKitButton> {
   bool _isPressed = false;
+
+  _ButtonSettings _getSettings() {
+    return switch (widget.settings) {
+      ButtonSettings.small => _ButtonSettings.small(),
+      ButtonSettings.standard => _ButtonSettings.standard()
+    };
+  }
 
   Color _getColorVivid() {
     return switch (widget.type) {
@@ -91,7 +105,7 @@ class _UiKitButtonState extends State<UiKitButton> {
 
   @override
   Widget build(BuildContext context) {
-    Size circularIndicatorSize = Size.fromRadius(widget.isSmall ? 6 : 10);
+    final settings = _getSettings();
 
     return GestureDetector(
       onTapDown: widget.isDisabled ? null : _onTapDown,
@@ -103,13 +117,13 @@ class _UiKitButtonState extends State<UiKitButton> {
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: widget.isSmall ? 8 : 12),
+          padding: settings.padding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.isLoading)
                 SizedBox.fromSize(
-                  size: circularIndicatorSize,
+                  size: settings.circularIndicatorSize,
                   child: CircularProgressIndicator(
                     color: _getContentColor(),
                     strokeWidth: 2,
@@ -119,7 +133,7 @@ class _UiKitButtonState extends State<UiKitButton> {
               Text(
                 widget.title,
                 style: context.theme.typeface.subheading.copyWith(
-                  fontSize: widget.isSmall ? 16 : 20,
+                  fontSize: settings.fontSize,
                   color: _getContentColor(),
                 ),
               ),
@@ -129,4 +143,36 @@ class _UiKitButtonState extends State<UiKitButton> {
       ),
     );
   }
+}
+
+abstract class _ButtonSettings {
+  factory _ButtonSettings.small() = _SmallSettings;
+
+  factory _ButtonSettings.standard() = _StandardSettings;
+
+  double get fontSize;
+  EdgeInsets get padding;
+  Size get circularIndicatorSize;
+}
+
+final class _SmallSettings implements _ButtonSettings {
+  @override
+  double get fontSize => 16;
+
+  @override
+  Size get circularIndicatorSize => const Size.fromRadius(6);
+
+  @override
+  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 8);
+}
+
+final class _StandardSettings implements _ButtonSettings {
+  @override
+  double get fontSize => 20;
+
+  @override
+  Size get circularIndicatorSize => const Size.fromRadius(10);
+
+  @override
+  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 12);
 }

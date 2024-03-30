@@ -121,8 +121,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       return UiKitButton(
                         title: 'Зарегистрироваться',
                         isSmall: true,
-
-                        //isLoading: _isShowLoading ? context.read<AuthenticationBloc>().state.isProgress : false,
+                        settings: ButtonSettings.small,
+                        state: _isShowLoading && context.read<AuthenticationBloc>().state.isProgress
+                            ? ButtonState.loading
+                            : ButtonState.active,
                         onTap: form.valid && !_isShowLoading
                             ? () {
                                 setState(() {

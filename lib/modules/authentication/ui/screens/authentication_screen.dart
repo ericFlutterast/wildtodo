@@ -96,6 +96,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                       return UiKitButton(
                         title: 'Войти',
                         isSmall: true,
+                        settings: ButtonSettings.small,
                         state: _isShowLoading && context.read<AuthenticationBloc>().state.isProgress
                             ? ButtonState.loading
                             : ButtonState.active,
