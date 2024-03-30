@@ -62,7 +62,7 @@ class _UiKitButtonState extends State<UiKitButton> {
     };
   }
 
-  Color? _setContentColor({required BuildContext context}) {
+  Color? _getContentColor({required BuildContext context}) {
     Color? inactiveColor = widget.isInactive ? context.theme.palette.grayscale.g5 : null;
 
     return widget.isInactive
@@ -73,6 +73,19 @@ class _UiKitButtonState extends State<UiKitButton> {
                 type: widget.type,
               )
             : context.theme.palette.grayscale.g6;
+  }
+
+  void _onTapDown(TapDownDetails detail) {
+    setState(() => _isPressed = true);
+  }
+
+  void _onTap() {
+    widget.onTap?.call();
+    setState(() {});
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    setState(() => _isPressed = false);
   }
 
   @override
@@ -89,25 +102,10 @@ class _UiKitButtonState extends State<UiKitButton> {
 
     Size circularIndicatorSize = Size.fromRadius(widget.isSmall == true ? 6 : 10);
 
-    final contentColor = _isPressed ? context.theme.palette.grayscale.g5 : _setContentColor(context: context);
-
     return GestureDetector(
-      onTapDown: widget.isDisabled
-          ? null
-          : (_) {
-              setState(() => _isPressed = true);
-            },
-      onTap: widget.isDisabled
-          ? null
-          : () {
-              widget.onTap?.call();
-              setState(() {});
-            },
-      onTapUp: widget.isDisabled
-          ? null
-          : (_) {
-              setState(() => _isPressed = false);
-            },
+      onTapDown: widget.isDisabled ? null : _onTapDown,
+      onTap: widget.isDisabled ? null : _onTap,
+      onTapUp: widget.isDisabled ? null : _onTapUp,
       child: Container(
         decoration: BoxDecoration(
           color: widget.isInactive
@@ -126,7 +124,7 @@ class _UiKitButtonState extends State<UiKitButton> {
                 SizedBox.fromSize(
                   size: circularIndicatorSize,
                   child: CircularProgressIndicator(
-                    color: contentColor,
+                    color: _getContentColor(context: context),
                     strokeWidth: 2,
                   ),
                 ),
@@ -135,7 +133,7 @@ class _UiKitButtonState extends State<UiKitButton> {
                 widget.title,
                 style: context.theme.typeface.subheading.copyWith(
                   fontSize: widget.isSmall == true ? 16 : 20,
-                  color: contentColor,
+                  color: _getContentColor(context: context),
                 ),
               ),
             ],
