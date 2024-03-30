@@ -82,19 +82,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   CustomTextInput(
                     hintText: 'Логин',
                     formControl: _emailFormControl,
-                    validationMessage: {
-                      'required': (_) => 'Обязательное поле',
-                      'email': (_) => 'Не корректный формат',
-                    },
                   ),
                   const SizedBox(height: 16),
                   CustomTextInput(
                     hintText: 'Пароль',
                     obscureText: true,
                     formControl: _passwordFormControl,
-                    validationMessage: {
-                      'required': (_) => 'Обязательное поле',
-                    },
                   ),
                   const SizedBox(height: 26),
                   // const CustomTextInput(),
