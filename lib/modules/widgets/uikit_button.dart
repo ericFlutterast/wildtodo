@@ -100,7 +100,7 @@ class _UiKitButtonState extends State<UiKitButton> {
             type: widget.type,
           );
 
-    Size circularIndicatorSize = Size.fromRadius(widget.isSmall == true ? 6 : 10);
+    Size circularIndicatorSize = Size.fromRadius(widget.isSmall ? 6 : 10);
 
     return GestureDetector(
       onTapDown: widget.isDisabled ? null : _onTapDown,
