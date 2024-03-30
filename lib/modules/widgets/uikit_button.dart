@@ -14,12 +14,6 @@ enum ButtonState {
 }
 
 class UiKitButton extends StatefulWidget {
-  final bool isSmall;
-  final String title;
-  final ButtonType type;
-  final ButtonState state;
-  final void Function()? onTap;
-
   const UiKitButton({
     super.key,
     this.isSmall = false,
@@ -29,7 +23,14 @@ class UiKitButton extends StatefulWidget {
     this.type = ButtonType.primary,
   });
 
+  final bool isSmall;
+  final String title;
+  final ButtonType type;
+  final ButtonState state;
+  final void Function()? onTap;
+
   bool get isDisabled => onTap == null || state == ButtonState.loading;
+  bool get isInactive => state == ButtonState.inactive;
 
   @override
   State<UiKitButton> createState() => _UiKitButtonState();
@@ -38,7 +39,7 @@ class UiKitButton extends StatefulWidget {
 class _UiKitButtonState extends State<UiKitButton> {
   bool _isPressed = false;
 
-  Color _setColorVivid({
+  Color _getColorVivid({
     required BuildContext context,
     required ButtonType type,
   }) {
@@ -49,7 +50,7 @@ class _UiKitButtonState extends State<UiKitButton> {
     };
   }
 
-  Color _setColorMuted({
+  Color _getColorMuted({
     required BuildContext context,
     required ButtonType type,
   }) {
@@ -61,14 +62,14 @@ class _UiKitButtonState extends State<UiKitButton> {
   }
 
   Color? _setContentColor({required BuildContext context}) {
-    Color? inactiveColor = widget.inactive == true ? context.theme.palette.grayscale.g5 : null;
+    Color? inactiveColor = widget.isInactive ? context.theme.palette.grayscale.g5 : null;
 
-    return widget.inactive == true
+    return widget.isInactive
         ? inactiveColor
         : widget.isDisabled
-            ? _setColorVivid(
+            ? _getColorVivid(
                 context: context,
-                type: widget._type,
+                type: widget.type,
               )
             : context.theme.palette.grayscale.g6;
   }
@@ -76,11 +77,11 @@ class _UiKitButtonState extends State<UiKitButton> {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = !widget.isDisabled
-        ? _setColorVivid(
+        ? _getColorVivid(
             context: context,
             type: widget.type,
           )
-        : _setColorMuted(
+        : _getColorMuted(
             context: context,
             type: widget.type,
           );
@@ -108,10 +109,10 @@ class _UiKitButtonState extends State<UiKitButton> {
             },
       child: Container(
         decoration: BoxDecoration(
-          color: widget.inactive == true
+          color: widget.isInactive
               ? context.theme.palette.grayscale.g1
               : _isPressed
-                  ? _setColorMuted(context: context, type: widget.type)
+                  ? _getColorMuted(context: context, type: widget.type)
                   : backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
@@ -120,7 +121,7 @@ class _UiKitButtonState extends State<UiKitButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.isLoading == true)
+              if (widget.isInactive)
                 SizedBox.fromSize(
                   size: circularIndicatorSize,
                   child: CircularProgressIndicator(
