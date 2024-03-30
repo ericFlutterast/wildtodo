@@ -116,7 +116,7 @@ class _UiKitButtonState extends State<UiKitButton> {
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: widget.isSmall == true ? 8 : 12),
+          padding: EdgeInsets.symmetric(vertical: widget.isSmall ? 8 : 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -132,7 +132,7 @@ class _UiKitButtonState extends State<UiKitButton> {
               Text(
                 widget.title,
                 style: context.theme.typeface.subheading.copyWith(
-                  fontSize: widget.isSmall == true ? 16 : 20,
+                  fontSize: widget.isSmall ? 16 : 20,
                   color: _getContentColor(context: context),
                 ),
               ),
