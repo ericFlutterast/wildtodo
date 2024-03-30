@@ -69,7 +69,7 @@ class _UiKitButtonState extends State<UiKitButton> {
   Color _getBackgroundColor() {
     if (widget.isInactive) return context.theme.palette.grayscale.g1;
 
-    if (widget.isDisabled) {
+    if (widget.isDisabled || _isPressed) {
       return _getColorMuted();
     }
 
