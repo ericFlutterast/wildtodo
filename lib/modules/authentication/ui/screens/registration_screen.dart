@@ -118,10 +118,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     const SizedBox(height: 26),
                     ReactiveFormConsumer(builder: (context, form, child) {
-                      return UiKitButton.primary(
+                      return UiKitButton(
                         title: 'Зарегистрироваться',
                         isSmall: true,
-                        isLoading: _isShowLoading ? context.read<AuthenticationBloc>().state.isProgress : false,
+
+                        //isLoading: _isShowLoading ? context.read<AuthenticationBloc>().state.isProgress : false,
                         onTap: form.valid && !_isShowLoading
                             ? () {
                                 setState(() {

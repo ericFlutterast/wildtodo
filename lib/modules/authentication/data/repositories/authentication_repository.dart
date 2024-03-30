@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:wildtodo/common/dio/network_client.dart';
 import 'package:wildtodo/common/secure_storage/secure_storage.dart';
 import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository_interface.dart';
@@ -27,6 +28,10 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
   @override
   Future<User> login({required String email, required String password}) async {
+    //TODO:
+    await Future.delayed(const Duration(seconds: 4));
+    throw DioException(requestOptions: RequestOptions());
+
     final response = await _networkClient.request(
       type: Post(
         path: '/api/v1/sessions/',

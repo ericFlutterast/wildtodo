@@ -8,7 +8,7 @@ enum ButtonType {
 }
 
 enum ButtonState {
-  idl,
+  active,
   inactive,
   loading,
 }
@@ -19,7 +19,7 @@ class UiKitButton extends StatefulWidget {
     this.isSmall = false,
     required this.onTap,
     required this.title,
-    this.state = ButtonState.idl,
+    this.state = ButtonState.active,
     this.type = ButtonType.primary,
   });
 
@@ -31,6 +31,7 @@ class UiKitButton extends StatefulWidget {
 
   bool get isDisabled => onTap == null || state == ButtonState.loading;
   bool get isInactive => state == ButtonState.inactive;
+  bool get isLoading => state == ButtonState.loading;
 
   @override
   State<UiKitButton> createState() => _UiKitButtonState();
@@ -121,7 +122,7 @@ class _UiKitButtonState extends State<UiKitButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.isInactive)
+              if (widget.isLoading)
                 SizedBox.fromSize(
                   size: circularIndicatorSize,
                   child: CircularProgressIndicator(
