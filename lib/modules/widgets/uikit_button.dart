@@ -75,6 +75,22 @@ class _UiKitButtonState extends State<UiKitButton> {
     return context.theme.palette.grayscale.g6;
   }
 
+  Color _getBackgroundColor() {
+    if (widget.isInactive) return context.theme.palette.grayscale.g1;
+
+    if (widget.isDisabled) {
+      return _getColorMuted(
+        context: context,
+        type: widget.type,
+      );
+    }
+
+    return _getColorVivid(
+      context: context,
+      type: widget.type,
+    );
+  }
+
   void _onTapDown(TapDownDetails detail) {
     setState(() => _isPressed = true);
   }
@@ -90,16 +106,6 @@ class _UiKitButtonState extends State<UiKitButton> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = !widget.isDisabled
-        ? _getColorVivid(
-            context: context,
-            type: widget.type,
-          )
-        : _getColorMuted(
-            context: context,
-            type: widget.type,
-          );
-
     Size circularIndicatorSize = Size.fromRadius(widget.isSmall ? 6 : 10);
 
     return GestureDetector(
@@ -108,11 +114,7 @@ class _UiKitButtonState extends State<UiKitButton> {
       onTapUp: widget.isDisabled ? null : _onTapUp,
       child: Container(
         decoration: BoxDecoration(
-          color: widget.isInactive
-              ? context.theme.palette.grayscale.g1
-              : _isPressed
-                  ? _getColorMuted(context: context, type: widget.type)
-                  : backgroundColor,
+          color: _getBackgroundColor(),
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
         child: Padding(
