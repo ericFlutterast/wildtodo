@@ -1,75 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:wildtodo/core/core_utils.dart';
 
-enum _ButtonType {
+enum ButtonType {
   primary,
   negative,
   positive,
 }
 
-class UiKitButton extends StatefulWidget {
-  final bool isLoading;
-  final bool? isSmall;
-  final bool? inactive;
-  final _ButtonType _type;
-  final String title;
-  final void Function()? onTap;
+enum ButtonState {
+  active,
+  inactive,
+  loading,
+}
 
-  const UiKitButton._(
-    this._type, {
-    this.isSmall = false,
-    this.isLoading = false,
-    this.inactive = false,
+enum ButtonSettings {
+  small,
+  standard,
+}
+
+class UiKitButton extends StatefulWidget {
+  const UiKitButton({
+    super.key,
     required this.onTap,
     required this.title,
+    this.isSmall = false,
+    this.type = ButtonType.primary,
+    this.state = ButtonState.active,
+    this.settings = ButtonSettings.standard,
   });
 
-  const UiKitButton.primary({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool? isLoading,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.primary,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading ?? false,
-        );
+  final bool isSmall;
+  final String title;
+  final ButtonType type;
+  final ButtonState state;
+  final ButtonSettings settings;
+  final void Function()? onTap;
 
-  const UiKitButton.negative({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool isLoading = false,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.negative,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading,
-        );
-
-  const UiKitButton.positive({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool isLoading = false,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.positive,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading,
-        );
-
-  bool get isDisabled => onTap == null || isLoading;
+  bool get isDisabled => onTap == null || state == ButtonState.loading;
+  bool get isInactive => state == ButtonState.inactive;
+  bool get isLoading => state == ButtonState.loading;
 
   @override
   State<UiKitButton> createState() => _UiKitButtonState();
@@ -78,93 +47,85 @@ class UiKitButton extends StatefulWidget {
 class _UiKitButtonState extends State<UiKitButton> {
   bool _isPressed = false;
 
-  Color _setColorVivid({
-    required BuildContext context,
-    required _ButtonType type,
-  }) {
-    return switch (type) {
-      _ButtonType.primary => context.theme.palette.accent.primary.vivid,
-      _ButtonType.negative => context.theme.palette.status.negative.vivid,
-      _ButtonType.positive => context.theme.palette.status.positive.vivid,
+  _ButtonSettings _getSettings() {
+    return switch (widget.settings) {
+      ButtonSettings.small => _ButtonSettings.small(),
+      ButtonSettings.standard => _ButtonSettings.standard()
     };
   }
 
-  Color _setColorMuted({
-    required BuildContext context,
-    required _ButtonType type,
-  }) {
-    return switch (type) {
-      _ButtonType.primary => context.theme.palette.accent.primary.muted,
-      _ButtonType.negative => context.theme.palette.status.negative.muted,
-      _ButtonType.positive => context.theme.palette.status.positive.muted,
+  Color _getColorVivid() {
+    return switch (widget.type) {
+      ButtonType.primary => context.theme.palette.accent.primary.vivid,
+      ButtonType.negative => context.theme.palette.status.negative.vivid,
+      ButtonType.positive => context.theme.palette.status.positive.vivid,
     };
   }
 
-  Color? _setContentColor({required BuildContext context}) {
-    Color? inactiveColor = widget.inactive == true ? context.theme.palette.grayscale.g5 : null;
+  Color _getColorMuted() {
+    return switch (widget.type) {
+      ButtonType.primary => context.theme.palette.accent.primary.muted,
+      ButtonType.negative => context.theme.palette.status.negative.muted,
+      ButtonType.positive => context.theme.palette.status.positive.muted,
+    };
+  }
 
-    return widget.inactive == true
-        ? inactiveColor
-        : widget.isDisabled
-            ? _setColorVivid(
-                context: context,
-                type: widget._type,
-              )
-            : context.theme.palette.grayscale.g6;
+  Color _getContentColor() {
+    if (widget.isInactive) return context.theme.palette.grayscale.g5;
+
+    if (widget.isDisabled || _isPressed) {
+      return _getColorVivid();
+    }
+
+    return context.theme.palette.grayscale.g6;
+  }
+
+  Color _getBackgroundColor() {
+    if (widget.isInactive) return context.theme.palette.grayscale.g1;
+
+    if (widget.isDisabled || _isPressed) {
+      return _getColorMuted();
+    }
+
+    return _getColorVivid();
+  }
+
+  void _onTapDown(TapDownDetails detail) {
+    setState(() => _isPressed = true);
+  }
+
+  void _onTap() {
+    widget.onTap?.call();
+    setState(() {});
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    setState(() => _isPressed = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = !widget.isDisabled
-        ? _setColorVivid(
-            context: context,
-            type: widget._type,
-          )
-        : _setColorMuted(
-            context: context,
-            type: widget._type,
-          );
-
-    Size circularIndicatorSize = Size.fromRadius(widget.isSmall == true ? 6 : 10);
-
-    final contentColor = _isPressed ? context.theme.palette.grayscale.g5 : _setContentColor(context: context);
+    final settings = _getSettings();
 
     return GestureDetector(
-      onTapDown: widget.isDisabled
-          ? null
-          : (_) {
-              setState(() => _isPressed = true);
-            },
-      onTap: widget.isDisabled
-          ? null
-          : () {
-              widget.onTap?.call();
-              setState(() {});
-            },
-      onTapUp: widget.isDisabled
-          ? null
-          : (_) {
-              setState(() => _isPressed = false);
-            },
+      onTapDown: widget.isDisabled ? null : _onTapDown,
+      onTap: widget.isDisabled ? null : _onTap,
+      onTapUp: widget.isDisabled ? null : _onTapUp,
       child: Container(
         decoration: BoxDecoration(
-          color: widget.inactive == true
-              ? context.theme.palette.grayscale.g1
-              : _isPressed
-                  ? _setColorMuted(context: context, type: widget._type)
-                  : backgroundColor,
+          color: _getBackgroundColor(),
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: widget.isSmall == true ? 8 : 12),
+          padding: settings.padding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (widget.isLoading == true)
+              if (widget.isLoading)
                 SizedBox.fromSize(
-                  size: circularIndicatorSize,
+                  size: settings.circularIndicatorSize,
                   child: CircularProgressIndicator(
-                    color: contentColor,
+                    color: _getContentColor(),
                     strokeWidth: 2,
                   ),
                 ),
@@ -172,8 +133,8 @@ class _UiKitButtonState extends State<UiKitButton> {
               Text(
                 widget.title,
                 style: context.theme.typeface.subheading.copyWith(
-                  fontSize: widget.isSmall == true ? 16 : 20,
-                  color: contentColor,
+                  fontSize: settings.fontSize,
+                  color: _getContentColor(),
                 ),
               ),
             ],
@@ -182,4 +143,36 @@ class _UiKitButtonState extends State<UiKitButton> {
       ),
     );
   }
+}
+
+abstract class _ButtonSettings {
+  factory _ButtonSettings.small() = _SmallSettings;
+
+  factory _ButtonSettings.standard() = _StandardSettings;
+
+  double get fontSize;
+  EdgeInsets get padding;
+  Size get circularIndicatorSize;
+}
+
+final class _SmallSettings implements _ButtonSettings {
+  @override
+  double get fontSize => 16;
+
+  @override
+  Size get circularIndicatorSize => const Size.fromRadius(6);
+
+  @override
+  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 8);
+}
+
+final class _StandardSettings implements _ButtonSettings {
+  @override
+  double get fontSize => 20;
+
+  @override
+  Size get circularIndicatorSize => const Size.fromRadius(10);
+
+  @override
+  EdgeInsets get padding => const EdgeInsets.symmetric(vertical: 12);
 }

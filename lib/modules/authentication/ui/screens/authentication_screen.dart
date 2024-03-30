@@ -93,10 +93,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   // const CustomTextInput(),
                   ReactiveFormConsumer(
                     builder: (context, form, child) {
-                      return UiKitButton.primary(
+                      return UiKitButton(
                         title: 'Войти',
                         isSmall: true,
-                        isLoading: _isShowLoading ? context.read<AuthenticationBloc>().state.isProgress : false,
+                        settings: ButtonSettings.small,
+                        state: _isShowLoading && context.read<AuthenticationBloc>().state.isProgress
+                            ? ButtonState.loading
+                            : ButtonState.active,
                         onTap: form.valid && !_isShowLoading
                             ? () {
                                 setState(() => _isShowLoading = true);
