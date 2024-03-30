@@ -62,17 +62,17 @@ class _UiKitButtonState extends State<UiKitButton> {
     };
   }
 
-  Color? _getContentColor({required BuildContext context}) {
-    Color? inactiveColor = widget.isInactive ? context.theme.palette.grayscale.g5 : null;
+  Color _getContentColor({required BuildContext context}) {
+    if (widget.isInactive) return context.theme.palette.grayscale.g5;
 
-    return widget.isInactive
-        ? inactiveColor
-        : widget.isDisabled
-            ? _getColorVivid(
-                context: context,
-                type: widget.type,
-              )
-            : context.theme.palette.grayscale.g6;
+    if (widget.isDisabled || _isPressed) {
+      return _getColorVivid(
+        context: context,
+        type: widget.type,
+      );
+    }
+
+    return context.theme.palette.grayscale.g6;
   }
 
   void _onTapDown(TapDownDetails detail) {
