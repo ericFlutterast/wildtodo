@@ -1,75 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:wildtodo/core/core_utils.dart';
 
-enum _ButtonType {
+enum ButtonType {
   primary,
   negative,
   positive,
 }
 
+enum ButtonState {
+  idl,
+  inactive,
+  loading,
+}
+
 class UiKitButton extends StatefulWidget {
-  final bool isLoading;
-  final bool? isSmall;
-  final bool? inactive;
-  final _ButtonType _type;
+  final bool isSmall;
   final String title;
+  final ButtonType type;
+  final ButtonState state;
   final void Function()? onTap;
 
-  const UiKitButton._(
-    this._type, {
+  const UiKitButton({
+    super.key,
     this.isSmall = false,
-    this.isLoading = false,
-    this.inactive = false,
     required this.onTap,
     required this.title,
+    this.state = ButtonState.idl,
+    this.type = ButtonType.primary,
   });
 
-  const UiKitButton.primary({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool? isLoading,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.primary,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading ?? false,
-        );
-
-  const UiKitButton.negative({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool isLoading = false,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.negative,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading,
-        );
-
-  const UiKitButton.positive({
-    required String title,
-    bool? isSmall,
-    bool? inactive,
-    bool isLoading = false,
-    void Function()? onTap,
-  }) : this._(
-          _ButtonType.positive,
-          onTap: onTap,
-          title: title,
-          isSmall: isSmall,
-          inactive: inactive,
-          isLoading: isLoading,
-        );
-
-  bool get isDisabled => onTap == null || isLoading;
+  bool get isDisabled => onTap == null || state == ButtonState.loading;
 
   @override
   State<UiKitButton> createState() => _UiKitButtonState();
@@ -80,23 +40,23 @@ class _UiKitButtonState extends State<UiKitButton> {
 
   Color _setColorVivid({
     required BuildContext context,
-    required _ButtonType type,
+    required ButtonType type,
   }) {
     return switch (type) {
-      _ButtonType.primary => context.theme.palette.accent.primary.vivid,
-      _ButtonType.negative => context.theme.palette.status.negative.vivid,
-      _ButtonType.positive => context.theme.palette.status.positive.vivid,
+      ButtonType.primary => context.theme.palette.accent.primary.vivid,
+      ButtonType.negative => context.theme.palette.status.negative.vivid,
+      ButtonType.positive => context.theme.palette.status.positive.vivid,
     };
   }
 
   Color _setColorMuted({
     required BuildContext context,
-    required _ButtonType type,
+    required ButtonType type,
   }) {
     return switch (type) {
-      _ButtonType.primary => context.theme.palette.accent.primary.muted,
-      _ButtonType.negative => context.theme.palette.status.negative.muted,
-      _ButtonType.positive => context.theme.palette.status.positive.muted,
+      ButtonType.primary => context.theme.palette.accent.primary.muted,
+      ButtonType.negative => context.theme.palette.status.negative.muted,
+      ButtonType.positive => context.theme.palette.status.positive.muted,
     };
   }
 
@@ -118,11 +78,11 @@ class _UiKitButtonState extends State<UiKitButton> {
     final backgroundColor = !widget.isDisabled
         ? _setColorVivid(
             context: context,
-            type: widget._type,
+            type: widget.type,
           )
         : _setColorMuted(
             context: context,
-            type: widget._type,
+            type: widget.type,
           );
 
     Size circularIndicatorSize = Size.fromRadius(widget.isSmall == true ? 6 : 10);
@@ -151,7 +111,7 @@ class _UiKitButtonState extends State<UiKitButton> {
           color: widget.inactive == true
               ? context.theme.palette.grayscale.g1
               : _isPressed
-                  ? _setColorMuted(context: context, type: widget._type)
+                  ? _setColorMuted(context: context, type: widget.type)
                   : backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),
