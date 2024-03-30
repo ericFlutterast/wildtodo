@@ -97,10 +97,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     CustomTextInput(
                       hintText: 'Почта',
                       formControl: _emailFormControl,
-                      validationMessage: {
-                        'required': (_) => 'Обязательное поле',
-                        'email': (_) => 'Не корректный формат',
-                      },
                     ),
                     const SizedBox(height: 16),
                     CustomTextInput(
@@ -108,8 +104,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       obscureText: true,
                       formControl: _passwordFormControl,
                       validationMessage: {
-                        'required': (_) => 'Обязательное поле',
-                        'minLength': (_) => 'Минимальная длина 8 символов'
+                        'minLength': (_) => 'Минимальная длина 8 символов',
                       },
                     ),
                     const SizedBox(height: 16),
