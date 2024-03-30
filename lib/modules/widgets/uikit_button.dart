@@ -40,36 +40,27 @@ class UiKitButton extends StatefulWidget {
 class _UiKitButtonState extends State<UiKitButton> {
   bool _isPressed = false;
 
-  Color _getColorVivid({
-    required BuildContext context,
-    required ButtonType type,
-  }) {
-    return switch (type) {
+  Color _getColorVivid() {
+    return switch (widget.type) {
       ButtonType.primary => context.theme.palette.accent.primary.vivid,
       ButtonType.negative => context.theme.palette.status.negative.vivid,
       ButtonType.positive => context.theme.palette.status.positive.vivid,
     };
   }
 
-  Color _getColorMuted({
-    required BuildContext context,
-    required ButtonType type,
-  }) {
-    return switch (type) {
+  Color _getColorMuted() {
+    return switch (widget.type) {
       ButtonType.primary => context.theme.palette.accent.primary.muted,
       ButtonType.negative => context.theme.palette.status.negative.muted,
       ButtonType.positive => context.theme.palette.status.positive.muted,
     };
   }
 
-  Color _getContentColor({required BuildContext context}) {
+  Color _getContentColor() {
     if (widget.isInactive) return context.theme.palette.grayscale.g5;
 
     if (widget.isDisabled || _isPressed) {
-      return _getColorVivid(
-        context: context,
-        type: widget.type,
-      );
+      return _getColorVivid();
     }
 
     return context.theme.palette.grayscale.g6;
@@ -79,16 +70,10 @@ class _UiKitButtonState extends State<UiKitButton> {
     if (widget.isInactive) return context.theme.palette.grayscale.g1;
 
     if (widget.isDisabled) {
-      return _getColorMuted(
-        context: context,
-        type: widget.type,
-      );
+      return _getColorMuted();
     }
 
-    return _getColorVivid(
-      context: context,
-      type: widget.type,
-    );
+    return _getColorVivid();
   }
 
   void _onTapDown(TapDownDetails detail) {
@@ -126,7 +111,7 @@ class _UiKitButtonState extends State<UiKitButton> {
                 SizedBox.fromSize(
                   size: circularIndicatorSize,
                   child: CircularProgressIndicator(
-                    color: _getContentColor(context: context),
+                    color: _getContentColor(),
                     strokeWidth: 2,
                   ),
                 ),
@@ -135,7 +120,7 @@ class _UiKitButtonState extends State<UiKitButton> {
                 widget.title,
                 style: context.theme.typeface.subheading.copyWith(
                   fontSize: widget.isSmall ? 16 : 20,
-                  color: _getContentColor(context: context),
+                  color: _getContentColor(),
                 ),
               ),
             ],
