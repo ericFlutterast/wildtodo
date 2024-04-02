@@ -1,9 +1,8 @@
 import 'package:fk_user_agent/fk_user_agent.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
+import 'package:wildtodo/modules/authentication/ui/widgets/authentication_widget.dart';
 import 'package:wildtodo/modules/initializer/di/app_dependencies.dart';
 import 'package:wildtodo/modules/initializer/di/dependencies_scope.dart';
 
@@ -45,10 +44,7 @@ class _AppRootState extends State<AppRoot> {
         builder: (context, child) {
           return DependenciesScope(
             appDependencies: widget.dependencies,
-            child: BlocProvider(
-              create: (context) => AuthenticationBloc(
-                repository: DependenciesScope.of(context).authenticationRepository,
-              )..add(const AuthenticationEvent.init()),
+            child: AuthenticationWidget(
               child: child!,
             ),
           );
