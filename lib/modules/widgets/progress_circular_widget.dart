@@ -19,16 +19,7 @@ class ProgressCircularWidget extends StatelessWidget {
     return CustomPaint(
       painter: _ProgressCircularPainter(context: context, percent: percent),
       child: Center(
-        child: ClipOval(
-          clipBehavior: Clip.hardEdge,
-          child: image ??
-              Image.asset(
-                'assets/images/default_avata_image.png',
-                fit: BoxFit.fill,
-                height: 30,
-                width: 30,
-              ),
-        ),
+        child: ClipOval(clipBehavior: Clip.hardEdge, child: image),
       ),
     );
   }
