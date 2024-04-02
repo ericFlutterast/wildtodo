@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wildtodo/common/assets/assets.dart';
 import 'package:wildtodo/core/core_utils.dart';
 
@@ -25,11 +26,11 @@ class WildAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      iconTheme: IconThemeData(color: context.theme.palette.grayscale.g5),
+      iconTheme: IconThemeData(color: context.theme.palette.grayscale.g5, size: 28),
       backgroundColor: backgroundColor ?? context.theme.palette.grayscale.g1,
       leading: leading ??
           GestureDetector(
-            onTap: leadingCallBack,
+            onTap: leadingCallBack ?? () => context.pop(),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 18),
               child: SvgPicture.asset(Assets.navigatorBack),
