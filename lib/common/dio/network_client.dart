@@ -136,13 +136,12 @@ class NetworkClient {
           cancelToken: type.cancelToken,
           onReceiveProgress: type.onReceiveProgress,
         ),
-      Delete() => _dio.post(
+      Delete() => _dio.delete(
           type.path,
           data: type.data,
           queryParameters: type.queryParameters,
           options: type.options,
           cancelToken: type.cancelToken,
-          onReceiveProgress: type.onReceiveProgress,
         )
     };
   }
