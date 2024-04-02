@@ -141,13 +141,20 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _logout(_$LogoutAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
-      //...
+
+      await _repository.logout(
+        sessionId: (state.user as AuthenticatedUser).sessionId,
+        uid: (state.user as AuthenticatedUser).uid,
+      );
+
       emit(const AuthenticationState.success(user: User.notAuthenticatedUser()));
-    } on FormatException {
+    } on DioException {
       //Network error handler
-      emit(AuthenticationState.error(user: state.user, message: 'Не удалось войти, проверьте подключение к интернету'));
+      emit(
+        AuthenticationState.error(user: state.user, message: 'Не удалось выполнить, проверьте подключение к интернету'),
+      );
     } on Object catch (error, stackTracer) {
-      emit(AuthenticationState.error(user: state.user, message: 'Ошибка авторизации'));
+      emit(AuthenticationState.error(user: state.user, message: 'Ну удалось выполнить'));
       rethrow;
     } finally {
       if (state.user.isAuthenticated) {
