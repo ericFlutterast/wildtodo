@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
+import 'package:wildtodo/modules/profile/ui/screens/profile_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _bottomNavigationKey = GlobalKey<NavigatorState>();
@@ -49,7 +52,7 @@ class CustomRouter {
         path: '/authentication',
         name: '/authentication',
         pageBuilder: (context, state) {
-          return _createCupertinoPage(
+          return _createPlatformPage(
             child: const AuthenticationScreen(),
           );
         },
@@ -58,11 +61,18 @@ class CustomRouter {
             path: 'registration',
             name: 'registration',
             pageBuilder: (context, state) {
-              return _createCupertinoPage(child: const RegistrationScreen());
+              return _createPlatformPage(child: const RegistrationScreen());
             },
           ),
         ],
       ),
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        pageBuilder: (context, state) {
+          return _createPlatformPage(child: const ProfileScreen());
+        },
+      )
     ],
   );
 
@@ -85,11 +95,15 @@ class CustomRouter {
     );
   }
 
-  static Page<T> _createCupertinoPage<T>({required Widget child}) {
-    return CupertinoPage(child: child);
-  }
+  static Page<T> _createPlatformPage<T>({required Widget child}) {
+    if (Platform.isAndroid) return MaterialPage<T>(child: child);
+    if (Platform.isIOS) return CupertinoPage<T>(child: child);
 
-  static Page<T> _createMaterialPage<T>({required Widget child}) {
-    return MaterialPage(child: child);
+    return CustomTransitionPage(
+      child: child,
+      transitionsBuilder: (_, __, ___, ____) {
+        return child;
+      },
+    );
   }
 }
