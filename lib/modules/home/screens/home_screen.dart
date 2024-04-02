@@ -79,9 +79,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen> {
                             size: 16,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              //TODO: Переход в профиль
-                            },
+                            onTap: () => context.pushNamed('profile'),
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(16, 7, 24, 7),
                               child: SizedBox(
