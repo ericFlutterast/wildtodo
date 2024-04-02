@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:wildtodo/common/dio/network_client.dart';
-import 'package:wildtodo/common/secure_storage/secure_storage.dart';
 import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
-import 'package:wildtodo/modules/authentication/data/repositories/authentication_repository.dart';
+import 'package:wildtodo/modules/initializer/di/app_dependencies.dart';
+import 'package:wildtodo/modules/initializer/di/dependencies_scope.dart';
 
 class AppRoot extends StatefulWidget {
-  final GoRouter router;
+  const AppRoot({
+    super.key,
+    required this.router,
+    required this.dependencies,
+  });
 
-  const AppRoot({super.key, required this.router});
+  final GoRouter router;
+  final AppDependencies dependencies;
 
   @override
   State<AppRoot> createState() => _AppRootState();
@@ -39,14 +43,14 @@ class _AppRootState extends State<AppRoot> {
         routerConfig: widget.router,
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
-          return BlocProvider(
-            create: (context) => AuthenticationBloc(
-              repository: AuthenticationRepository(
-                secureStorage: SecureStorage.instance,
-                networkClient: NetworkClient(),
-              ),
-            )..add(const AuthenticationEvent.init()),
-            child: child!,
+          return DependenciesScope(
+            appDependencies: widget.dependencies,
+            child: BlocProvider(
+              create: (context) => AuthenticationBloc(
+                repository: DependenciesScope.of(context).authenticationRepository,
+              )..add(const AuthenticationEvent.init()),
+              child: child!,
+            ),
           );
         },
       ),
