@@ -8,21 +8,24 @@ class TasksScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 4,
-      itemBuilder: (context, index) => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: Task(
-          status: TaskStatus.success,
-          time: '12:00 AM',
-          category: 'Importance',
-          isPrivat: true,
-          isStarred: true,
+    return CustomScrollView(
+      physics:  const BouncingScrollPhysics(),
+      slivers: [
+        SliverList.separated(
+          itemCount: 4,
+          itemBuilder: (context, index) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Task(
+              status: TaskStatus.success,
+              time: '12:00 AM',
+              category: 'Importance',
+              isPrivat: true,
+              isStarred: true,
+            ),
+          ),
+          separatorBuilder: (context, index) => const SizedBox(height: 5),
         ),
-      ),
-      separatorBuilder: (context, index) => const SizedBox(
-        height: 5,
-      ),
+      ],
     );
   }
 }

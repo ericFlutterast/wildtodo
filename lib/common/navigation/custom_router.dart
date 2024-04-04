@@ -7,6 +7,7 @@ import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 import 'package:wildtodo/modules/profile/ui/screens/profile_screen.dart';
+import 'package:wildtodo/modules/tasks/screen/tasks_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _bottomNavigationKey = GlobalKey<NavigatorState>();
@@ -25,7 +26,11 @@ class CustomRouter {
           GoRoute(
             path: '/tasks',
             pageBuilder: (context, state) {
-              return _createPage(context: context, state: state, child: Container(color: Colors.pink));
+              return _createPage(
+                context: context,
+                state: state,
+                child: const TasksScreen(),
+              );
             },
           ),
           GoRoute(
