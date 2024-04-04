@@ -54,12 +54,16 @@ class AuthenticationRepository implements IAuthenticationRepository {
   Future<void> logout({required String uid, required String sessionId}) async {
     final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
 
-    await _networkClient.request(
-      type: Delete(
-        path: '/api/v1/protected/users/me/sessions/$sessionId/',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+    await Future.wait([
+      _networkClient.request(
+        type: Delete(
+          path: '/api/v1/protected/users/me/sessions/$sessionId/',
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        ),
       ),
-    );
+      _secureStorage.delete(key: SecureStorageKeys.accessToken),
+      _secureStorage.delete(key: SecureStorageKeys.refreshToken),
+    ]);
   }
 
   @override
