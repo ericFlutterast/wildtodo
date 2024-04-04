@@ -44,7 +44,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
     final List results = await Future.wait([
       _secureStorage.write(key: SecureStorageKeys.accessToken, value: response!.data['access_token']),
       _secureStorage.write(key: SecureStorageKeys.refreshToken, value: response.data['refresh_token']),
-      _getUserInfo(userId: '', accessToken: response.data['access_token']),
+      _getUserInfo(accessToken: response.data['access_token']),
     ]);
 
     return results[2];
@@ -69,14 +69,15 @@ class AuthenticationRepository implements IAuthenticationRepository {
   }
 
   @override
-  Future<bool> init() async {
-    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
-    return refreshToken != null;
+  Future<User> init() async {
+    final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
+
+    if (accessToken == null) return const User.notAuthenticatedUser();
+
+    return await _getUserInfo(accessToken: accessToken);
   }
 
-  Future<User> _getUserInfo({required String userId, required String accessToken}) async {
-    final tokenData = JwtDecoder.decode(token: accessToken);
-
+  Future<User> _getUserInfo({required String accessToken}) async {
     final response = await _networkClient.request(
       type: Get(
         path: '/api/v1/protected/users/me/',
@@ -88,7 +89,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
     return User.authenticatedUser(
       lastName: 'lupa',
       email: response!.data['email'],
-      fistName: '',
+      fistName: 'pupa',
       phoneNumber: '',
       photoUrl: '',
       uid: response.data['user_id'],
