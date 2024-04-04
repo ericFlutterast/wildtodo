@@ -9,17 +9,17 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      physics:  const BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       slivers: [
         SliverList.separated(
           itemCount: 4,
           itemBuilder: (context, index) => const Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
             child: Task(
-              status: TaskStatus.success,
+              status: TaskStatus.failed,
               time: '12:00 AM',
               category: 'Importance',
-              isPrivat: true,
+              isPrivate: false,
               isStarred: true,
             ),
           ),
