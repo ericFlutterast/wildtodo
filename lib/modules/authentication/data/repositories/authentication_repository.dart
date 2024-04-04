@@ -32,7 +32,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
   Future<User> login({required String email, required String password}) async {
     final response = await _networkClient.request(
       type: Post(
-        path: '/api/v1/sessions/',
+        path: '/api/v1/users/me/sessions/',
         data: {
           "email": email,
           "password": password,
@@ -47,7 +47,6 @@ class AuthenticationRepository implements IAuthenticationRepository {
       _getUserInfo(userId: '', accessToken: response.data['access_token']),
     ]);
 
-    //TODO: Распарсить response в юзера
     return results[2];
   }
 
@@ -57,7 +56,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     await _networkClient.request(
       type: Delete(
-        path: '/api/v1/protected/users/$uid/sessions/$sessionId/',
+        path: '/api/v1/protected/users/me/sessions/$sessionId/',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       ),
     );
@@ -65,7 +64,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
   @override
   Future<bool> init() async {
-    final refreshToken = await _secureStorage.read(key: 'refresh_token');
+    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
     return refreshToken != null;
   }
 
@@ -74,7 +73,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     final response = await _networkClient.request(
       type: Get(
-        path: '/api/v1/protected/users/${tokenData['sub']!}/',
+        path: '/api/v1/protected/users/me/',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       ),
     );
