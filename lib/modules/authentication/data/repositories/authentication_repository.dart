@@ -32,7 +32,7 @@ class AuthenticationRepository implements IAuthenticationRepository {
   Future<User> login({required String email, required String password}) async {
     final response = await _networkClient.request(
       type: Post(
-        path: '/api/v1/sessions/',
+        path: '/api/v1/users/me/sessions/',
         data: {
           "email": email,
           "password": password,
@@ -47,25 +47,30 @@ class AuthenticationRepository implements IAuthenticationRepository {
       _getUserInfo(userId: '', accessToken: response.data['access_token']),
     ]);
 
-    //TODO: Распарсить response в юзера
     return results[2];
   }
 
   @override
-  Future<void> logout({required String uid, required String sessionId}) async {
+  Future<void> logout({required String uid}) async {
     final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
+    assert(accessToken != null, 'Если нет токена то пользователь не залогинен');
+    final tokenData = JwtDecoder.decode(token: accessToken!);
 
-    await _networkClient.request(
-      type: Delete(
-        path: '/api/v1/protected/users/$uid/sessions/$sessionId/',
-        options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+    await Future.wait([
+      _networkClient.request(
+        type: Delete(
+          path: '/api/v1/protected/users/me/sessions/${tokenData['iat']}/',
+          options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
+        ),
       ),
-    );
+      _secureStorage.delete(key: SecureStorageKeys.accessToken),
+      _secureStorage.delete(key: SecureStorageKeys.refreshToken),
+    ]);
   }
 
   @override
   Future<bool> init() async {
-    final refreshToken = await _secureStorage.read(key: 'refresh_token');
+    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
     return refreshToken != null;
   }
 
@@ -74,14 +79,13 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     final response = await _networkClient.request(
       type: Get(
-        path: '/api/v1/protected/users/${tokenData['sub']!}/',
+        path: '/api/v1/protected/users/me/',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
       ),
     );
 
     //TODO: когда появяться дополнительные поля у юзера сделать сериализацию
     return User.authenticatedUser(
-      sessionId: tokenData['iat'].toString(),
       lastName: 'lupa',
       email: response!.data['email'],
       fistName: '',

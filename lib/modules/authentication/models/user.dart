@@ -3,7 +3,6 @@ abstract interface class User {
   const factory User.notAuthenticatedUser() = NotAuthenticatedUser;
 
   const factory User.authenticatedUser({
-    required final String sessionId,
     required final String lastName,
     required final String email,
     required final String fistName,
@@ -45,16 +44,7 @@ class NotAuthenticatedUser implements User {
 
 //реализация аунтифицированного пользователя
 class AuthenticatedUser implements User {
-  final String sessionId;
-  final String fistName;
-  final String lastName;
-  final String phoneNumber;
-  final String uid;
-  final String photoUrl;
-  final String email;
-
   const AuthenticatedUser({
-    required this.sessionId,
     required this.lastName,
     required this.email,
     required this.fistName,
@@ -62,6 +52,13 @@ class AuthenticatedUser implements User {
     required this.photoUrl,
     required this.uid,
   });
+
+  final String fistName;
+  final String lastName;
+  final String phoneNumber;
+  final String uid;
+  final String photoUrl;
+  final String email;
 
   @override
   bool get isAuthenticated => !isNotAuthenticated;

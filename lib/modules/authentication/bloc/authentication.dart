@@ -142,10 +142,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       emit(AuthenticationState.inProgress(user: state.user));
 
-      await _repository.logout(
-        sessionId: (state.user as AuthenticatedUser).sessionId,
-        uid: (state.user as AuthenticatedUser).uid,
-      );
+      await _repository.logout(uid: (state.user as AuthenticatedUser).uid);
 
       emit(const AuthenticationState.success(user: User.notAuthenticatedUser()));
     } on DioException {
