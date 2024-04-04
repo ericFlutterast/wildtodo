@@ -51,13 +51,15 @@ class AuthenticationRepository implements IAuthenticationRepository {
   }
 
   @override
-  Future<void> logout({required String uid, required String sessionId}) async {
+  Future<void> logout({required String uid}) async {
     final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
+    assert(accessToken != null, 'Если нет токена то пользователь не залогинен');
+    final tokenData = JwtDecoder.decode(token: accessToken!);
 
     await Future.wait([
       _networkClient.request(
         type: Delete(
-          path: '/api/v1/protected/users/me/sessions/$sessionId/',
+          path: '/api/v1/protected/users/me/sessions/${tokenData['iat']}/',
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
         ),
       ),
@@ -84,7 +86,6 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     //TODO: когда появяться дополнительные поля у юзера сделать сериализацию
     return User.authenticatedUser(
-      sessionId: tokenData['iat'].toString(),
       lastName: 'lupa',
       email: response!.data['email'],
       fistName: '',
