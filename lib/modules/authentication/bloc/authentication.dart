@@ -104,18 +104,21 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _init(_$InitAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       emit(AuthenticationState.inProgress(user: state.user));
-      final result = await _repository.init();
 
-      if (result) {
-        emit(AuthenticationState.authenticated(user: state.user));
-      } else {
-        emit(AuthenticationState.unAuthenticated(user: state.user));
-      }
+      final user = await _repository.init();
+
+      emit(AuthenticationState.success(user: user));
     } catch (_) {
       emit(const AuthenticationState.error(
         message: 'Не удалось войти в профиль',
         user: User.notAuthenticatedUser(),
       ));
+    } finally {
+      if (state.user.isAuthenticated) {
+        emit(AuthenticationState.authenticated(user: state.user));
+      } else {
+        emit(const AuthenticationState.unAuthenticated());
+      }
     }
   }
 

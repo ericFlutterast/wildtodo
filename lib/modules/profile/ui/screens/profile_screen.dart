@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
+import 'package:wildtodo/modules/authentication/models/user.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -35,25 +36,7 @@ class ProfileScreen extends StatelessWidget {
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    CircleAvatar(
-                      child: null,
-                      radius: 50,
-                      backgroundColor: context.theme.palette.grayscale.g5,
-                    ),
-                    const SizedBox(height: 25),
-                    Center(
-                      child: Text(
-                        'User name',
-                        style: context.theme.typeface.body2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        'User email',
-                        style: context.theme.typeface.body2,
-                      ),
-                    ),
+                    const ProfileHeader(),
                   ],
                 ),
               ),
@@ -61,6 +44,49 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state) {
+        return state.maybeMap<Widget>(
+          authenticated: (state) {
+            final user = state.user as AuthenticatedUser;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CircleAvatar(
+                  child: null,
+                  radius: 50,
+                  backgroundColor: context.theme.palette.grayscale.g5,
+                ),
+                const SizedBox(height: 25),
+                Center(
+                  child: Text(
+                    user.fistName,
+                    style: context.theme.typeface.body2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    user.email,
+                    style: context.theme.typeface.body2,
+                  ),
+                ),
+              ],
+            );
+          },
+          orElse: () => const SizedBox(),
+        );
+      },
     );
   }
 }
