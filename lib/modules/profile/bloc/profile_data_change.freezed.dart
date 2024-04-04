@@ -129,7 +129,12 @@ class __$$UpdateEmailProfileDataChangeEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UpdateEmailProfileDataChangeEventImpl
-    extends _UpdateEmailProfileDataChangeEvent {
+    extends _UpdateEmailProfileDataChangeEvent
+    with
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter,
+        _UpdatingEmailEmitter {
   const _$UpdateEmailProfileDataChangeEventImpl({required this.email})
       : super._();
 
@@ -240,8 +245,12 @@ class _$UpdateEmailProfileDataChangeEventImpl
   }
 }
 
-abstract class _UpdateEmailProfileDataChangeEvent
-    extends ProfileDataChangeEvent {
+abstract class _UpdateEmailProfileDataChangeEvent extends ProfileDataChangeEvent
+    implements
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter,
+        _UpdatingEmailEmitter {
   const factory _UpdateEmailProfileDataChangeEvent(
       {required final String email}) = _$UpdateEmailProfileDataChangeEventImpl;
   const _UpdateEmailProfileDataChangeEvent._() : super._();
@@ -290,7 +299,12 @@ class __$$UpdatePsswordProfileDataChangeEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UpdatePsswordProfileDataChangeEventImpl
-    extends _UpdatePsswordProfileDataChangeEvent {
+    extends _UpdatePsswordProfileDataChangeEvent
+    with
+        _UpdatingPasswordEmitter,
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter {
   const _$UpdatePsswordProfileDataChangeEventImpl({required this.password})
       : super._();
 
@@ -403,7 +417,12 @@ class _$UpdatePsswordProfileDataChangeEventImpl
 }
 
 abstract class _UpdatePsswordProfileDataChangeEvent
-    extends ProfileDataChangeEvent {
+    extends ProfileDataChangeEvent
+    implements
+        _UpdatingPasswordEmitter,
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter {
   const factory _UpdatePsswordProfileDataChangeEvent(
           {required final String password}) =
       _$UpdatePsswordProfileDataChangeEventImpl;
@@ -453,7 +472,8 @@ class __$$ChangeNameProfileDataChangeEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ChangeNameProfileDataChangeEventImpl
-    extends _ChangeNameProfileDataChangeEvent {
+    extends _ChangeNameProfileDataChangeEvent
+    with _NameChangingEmitter, _InitialEmitter, _SuccessEmitter, _ErrorEmitter {
   const _$ChangeNameProfileDataChangeEventImpl({required this.name})
       : super._();
 
@@ -564,8 +584,12 @@ class _$ChangeNameProfileDataChangeEventImpl
   }
 }
 
-abstract class _ChangeNameProfileDataChangeEvent
-    extends ProfileDataChangeEvent {
+abstract class _ChangeNameProfileDataChangeEvent extends ProfileDataChangeEvent
+    implements
+        _NameChangingEmitter,
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter {
   const factory _ChangeNameProfileDataChangeEvent(
       {required final String name}) = _$ChangeNameProfileDataChangeEventImpl;
   const _ChangeNameProfileDataChangeEvent._() : super._();
@@ -614,7 +638,8 @@ class __$$ChangeSexProfileDataChangeEventImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ChangeSexProfileDataChangeEventImpl
-    extends _ChangeSexProfileDataChangeEvent {
+    extends _ChangeSexProfileDataChangeEvent
+    with _SexChangingEmitter, _InitialEmitter, _SuccessEmitter, _ErrorEmitter {
   const _$ChangeSexProfileDataChangeEventImpl({required this.sex}) : super._();
 
   @override
@@ -724,7 +749,12 @@ class _$ChangeSexProfileDataChangeEventImpl
   }
 }
 
-abstract class _ChangeSexProfileDataChangeEvent extends ProfileDataChangeEvent {
+abstract class _ChangeSexProfileDataChangeEvent extends ProfileDataChangeEvent
+    implements
+        _SexChangingEmitter,
+        _InitialEmitter,
+        _SuccessEmitter,
+        _ErrorEmitter {
   const factory _ChangeSexProfileDataChangeEvent({required final int sex}) =
       _$ChangeSexProfileDataChangeEventImpl;
   const _ChangeSexProfileDataChangeEvent._() : super._();
@@ -745,7 +775,7 @@ mixin _$ProfileDataChangeState {
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -756,7 +786,7 @@ mixin _$ProfileDataChangeState {
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -767,7 +797,7 @@ mixin _$ProfileDataChangeState {
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) =>
@@ -883,7 +913,7 @@ class _$InitialProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return initial();
@@ -897,7 +927,7 @@ class _$InitialProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return initial?.call();
@@ -911,7 +941,7 @@ class _$InitialProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
@@ -1030,7 +1060,7 @@ class _$NameChangingProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return nameChanging();
@@ -1044,7 +1074,7 @@ class _$NameChangingProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return nameChanging?.call();
@@ -1058,7 +1088,7 @@ class _$NameChangingProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
@@ -1178,7 +1208,7 @@ class _$SexChangingProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return sexChanging();
@@ -1192,7 +1222,7 @@ class _$SexChangingProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return sexChanging?.call();
@@ -1206,7 +1236,7 @@ class _$SexChangingProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
@@ -1326,7 +1356,7 @@ class _$UpdatingPasswordProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return updatingPassword();
@@ -1340,7 +1370,7 @@ class _$UpdatingPasswordProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return updatingPassword?.call();
@@ -1354,7 +1384,7 @@ class _$UpdatingPasswordProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
@@ -1477,7 +1507,7 @@ class _$UpdatingupdatingEmailProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return updatingEmail();
@@ -1491,7 +1521,7 @@ class _$UpdatingupdatingEmailProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return updatingEmail?.call();
@@ -1505,7 +1535,7 @@ class _$UpdatingupdatingEmailProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
@@ -1583,6 +1613,8 @@ abstract class _$$SuccessProfileDataChangeStateImplCopyWith<$Res> {
           _$SuccessProfileDataChangeStateImpl value,
           $Res Function(_$SuccessProfileDataChangeStateImpl) then) =
       __$$SuccessProfileDataChangeStateImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String successMessage});
 }
 
 /// @nodoc
@@ -1594,28 +1626,55 @@ class __$$SuccessProfileDataChangeStateImplCopyWithImpl<$Res>
       _$SuccessProfileDataChangeStateImpl _value,
       $Res Function(_$SuccessProfileDataChangeStateImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? successMessage = null,
+  }) {
+    return _then(_$SuccessProfileDataChangeStateImpl(
+      successMessage: null == successMessage
+          ? _value.successMessage
+          : successMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$SuccessProfileDataChangeStateImpl
     extends SuccessProfileDataChangeState {
-  const _$SuccessProfileDataChangeStateImpl() : super._();
+  const _$SuccessProfileDataChangeStateImpl({required this.successMessage})
+      : super._();
+
+  @override
+  final String successMessage;
 
   @override
   String toString() {
-    return 'ProfileDataChangeState.success()';
+    return 'ProfileDataChangeState.success(successMessage: $successMessage)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SuccessProfileDataChangeStateImpl);
+            other is _$SuccessProfileDataChangeStateImpl &&
+            (identical(other.successMessage, successMessage) ||
+                other.successMessage == successMessage));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, successMessage);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SuccessProfileDataChangeStateImplCopyWith<
+          _$SuccessProfileDataChangeStateImpl>
+      get copyWith => __$$SuccessProfileDataChangeStateImplCopyWithImpl<
+          _$SuccessProfileDataChangeStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1625,10 +1684,10 @@ class _$SuccessProfileDataChangeStateImpl
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
-    return success();
+    return success(successMessage);
   }
 
   @override
@@ -1639,10 +1698,10 @@ class _$SuccessProfileDataChangeStateImpl
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
-    return success?.call();
+    return success?.call(successMessage);
   }
 
   @override
@@ -1653,12 +1712,12 @@ class _$SuccessProfileDataChangeStateImpl
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success();
+      return success(successMessage);
     }
     return orElse();
   }
@@ -1719,9 +1778,16 @@ class _$SuccessProfileDataChangeStateImpl
 }
 
 abstract class SuccessProfileDataChangeState extends ProfileDataChangeState {
-  const factory SuccessProfileDataChangeState() =
+  const factory SuccessProfileDataChangeState(
+          {required final String successMessage}) =
       _$SuccessProfileDataChangeStateImpl;
   const SuccessProfileDataChangeState._() : super._();
+
+  String get successMessage;
+  @JsonKey(ignore: true)
+  _$$SuccessProfileDataChangeStateImplCopyWith<
+          _$SuccessProfileDataChangeStateImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1799,7 +1865,7 @@ class _$ErrorProfileDataChangeStateImpl extends ErrorProfileDataChangeState {
     required TResult Function() sexChanging,
     required TResult Function() updatingPassword,
     required TResult Function() updatingEmail,
-    required TResult Function() success,
+    required TResult Function(String successMessage) success,
     required TResult Function(String? message) error,
   }) {
     return error(message);
@@ -1813,7 +1879,7 @@ class _$ErrorProfileDataChangeStateImpl extends ErrorProfileDataChangeState {
     TResult? Function()? sexChanging,
     TResult? Function()? updatingPassword,
     TResult? Function()? updatingEmail,
-    TResult? Function()? success,
+    TResult? Function(String successMessage)? success,
     TResult? Function(String? message)? error,
   }) {
     return error?.call(message);
@@ -1827,7 +1893,7 @@ class _$ErrorProfileDataChangeStateImpl extends ErrorProfileDataChangeState {
     TResult Function()? sexChanging,
     TResult Function()? updatingPassword,
     TResult Function()? updatingEmail,
-    TResult Function()? success,
+    TResult Function(String successMessage)? success,
     TResult Function(String? message)? error,
     required TResult orElse(),
   }) {
