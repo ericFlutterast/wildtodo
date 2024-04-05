@@ -8,6 +8,7 @@ typedef ValidationMessage = Map<String, ValidationMessageFunction>?;
 class CustomTextInput extends StatelessWidget {
   const CustomTextInput({
     super.key,
+    required this.formControl,
     this.onTap,
     this.hintText,
     this.focusNode,
@@ -17,7 +18,6 @@ class CustomTextInput extends StatelessWidget {
     this.onTapOutside,
     this.inputFormatters,
     this.onEditingComplete,
-    this.formControl,
     this.validationMessage,
     this.maxLines = 1,
     this.obscureText = false,
