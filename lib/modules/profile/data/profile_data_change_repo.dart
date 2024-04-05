@@ -4,8 +4,8 @@ import 'package:wildtodo/common/secure_storage/secure_storage.dart';
 import 'package:wildtodo/common/secure_storage/secure_storage_keys.dart';
 import 'package:wildtodo/modules/profile/data/i_profile_data_change_repo.dart';
 
-final class ProfileDataChangeRepo implements IProfileChangeDataRepo {
-  const ProfileDataChangeRepo({
+final class ProfileDataChangeRepository implements IProfileChangeDataRepo {
+  const ProfileDataChangeRepository({
     required NetworkClient networkClient,
     required SecureStorage secureStorage,
   })  : _networkClient = networkClient,
