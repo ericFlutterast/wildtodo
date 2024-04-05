@@ -87,9 +87,9 @@ class CustomRouter {
               return _createPage(
                 state: state,
                 context: context,
-                child: const ProfileSettingsScreen(
+                child: ProfileSettingsScreen.getPage(
                   //TODO: передавать пользователя со страницы профиля черезе стейт
-                  user: AuthenticatedUser(
+                  user: const AuthenticatedUser(
                     lastName: '',
                     email: 'maxcuckold@mail.dik',
                     fistName: 'Lupapupa',
