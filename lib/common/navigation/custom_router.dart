@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wildtodo/modules/authentication/models/user.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
 import 'package:wildtodo/modules/profile/ui/screens/profile_screen.dart';
+import 'package:wildtodo/modules/profile/ui/screens/profile_settings_screen.dart';
 import 'package:wildtodo/modules/tasks/screen/tasks_screen.dart';
 
 final GlobalKey<NavigatorState> _navigationState = GlobalKey<NavigatorState>();
@@ -77,6 +79,29 @@ class CustomRouter {
         pageBuilder: (context, state) {
           return _createPlatformPage(child: const ProfileScreen());
         },
+        routes: [
+          GoRoute(
+            path: 'profile_settings',
+            name: 'profile_settings',
+            pageBuilder: (context, state) {
+              return _createPage(
+                state: state,
+                context: context,
+                child: const ProfileSettingsScreen(
+                  //TODO: передавать пользователя со страницы профиля черезе стейт
+                  user: AuthenticatedUser(
+                    lastName: '',
+                    email: 'maxcuckold@mail.dik',
+                    fistName: 'Lupapupa',
+                    phoneNumber: '',
+                    photoUrl: '',
+                    uid: 'dfsdfdsf',
+                  ),
+                ),
+              );
+            },
+          )
+        ],
       )
     ],
   );
@@ -93,7 +118,7 @@ class CustomRouter {
       reverseTransitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (context, animation, animationSecondary, thisChild) {
         return FadeTransition(
-          opacity: Tween<double>(begin: 0.3, end: 1).animate(animation),
+          opacity: Tween<double>(begin: 0.0, end: 1).animate(animation),
           child: thisChild,
         );
       },

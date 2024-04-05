@@ -21,11 +21,9 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: context.theme.palette.grayscale.g1,
         appBar: WildAppBar(
           action: [
-            IconButton(
-              onPressed: () {
-                context.read<AuthenticationBloc>().add(const AuthenticationEvent.logout());
-              },
-              icon: const Icon(Icons.logout),
+            TextButton(
+              onPressed: () => context.pushNamed('profile_settings'),
+              child: const Text('Изм.'),
             ),
           ],
         ),
@@ -62,10 +60,13 @@ class ProfileHeader extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CircleAvatar(
-                  child: null,
-                  radius: 50,
-                  backgroundColor: context.theme.palette.grayscale.g5,
+                Hero(
+                  tag: 'profile_avatar',
+                  child: CircleAvatar(
+                    child: null,
+                    radius: 50,
+                    backgroundColor: context.theme.palette.grayscale.g5,
+                  ),
                 ),
                 const SizedBox(height: 25),
                 Center(
