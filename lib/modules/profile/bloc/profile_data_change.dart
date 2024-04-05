@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:wildtodo/modules/profile/data/i_profile_change_data_repo.dart';
+import 'package:wildtodo/modules/profile/data/i_profile_data_change_repo.dart';
 
 part 'profile_data_change.freezed.dart';
 

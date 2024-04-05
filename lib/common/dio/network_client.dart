@@ -120,7 +120,7 @@ class NetworkClient {
           cancelToken: type.cancelToken,
           onReceiveProgress: type.onReceiveProgress,
         ),
-      Put() => _dio.post(
+      Put() => _dio.put(
           type.path,
           data: type.data,
           queryParameters: type.queryParameters,
@@ -128,7 +128,7 @@ class NetworkClient {
           cancelToken: type.cancelToken,
           onReceiveProgress: type.onReceiveProgress,
         ),
-      Patch() => _dio.post(
+      Patch() => _dio.patch(
           type.path,
           data: type.data,
           queryParameters: type.queryParameters,
