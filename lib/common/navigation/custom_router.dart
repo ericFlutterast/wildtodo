@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wildtodo/modules/authentication/models/user.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/authentication_screen.dart';
 import 'package:wildtodo/modules/authentication/ui/screens/registration_screen.dart';
 import 'package:wildtodo/modules/home/screens/home_screen.dart';
@@ -87,17 +86,7 @@ class CustomRouter {
               return _createPage(
                 state: state,
                 context: context,
-                child: ProfileSettingsScreen.getPage(
-                  //TODO: передавать пользователя со страницы профиля черезе стейт
-                  user: const AuthenticatedUser(
-                    lastName: '',
-                    email: 'maxcuckold@mail.dik',
-                    fistName: 'Lupapupa',
-                    phoneNumber: '',
-                    photoUrl: '',
-                    uid: 'dfsdfdsf',
-                  ),
-                ),
+                child: ProfileSettingsScreen.getPage(),
               );
             },
           )

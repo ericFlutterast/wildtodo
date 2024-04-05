@@ -11,27 +11,23 @@ import 'package:wildtodo/modules/widgets/custom_text_input.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
-  const ProfileSettingsScreen({
-    super.key,
-    required this.user,
-  });
-
-  final AuthenticatedUser user;
+  const ProfileSettingsScreen({super.key});
 
   @override
   State<ProfileSettingsScreen> createState() => _ProfileSettingsScreenState();
 
-  static Widget getPage({required AuthenticatedUser user}) {
+  static Widget getPage() {
     return BlocProvider(
       create: (context) => ProfileDataChangeBloc(
         repository: DependenciesScope.of(context).profileDataChangeRepository,
       ),
-      child: ProfileSettingsScreen(user: user),
+      child: const ProfileSettingsScreen(),
     );
   }
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
+  late final AuthenticatedUser _user;
   late final FormControl<String> _nameFormController;
   late final FormControl<String> _emailFormController;
   late final FormGroup _formGroup;
@@ -40,8 +36,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   void initState() {
     super.initState();
 
-    _nameFormController = FormControl<String>(value: widget.user.fistName);
-    _emailFormController = FormControl<String>(value: widget.user.email);
+    _user = context.read<AuthenticationBloc>().state.user as AuthenticatedUser;
+
+    _nameFormController = FormControl<String>(value: _user.fistName);
+    _emailFormController = FormControl<String>(value: _user.email);
 
     _formGroup = FormGroup(<String, FormControl>{
       'name': _nameFormController,
