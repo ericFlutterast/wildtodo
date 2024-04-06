@@ -38,8 +38,20 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
     _user = context.read<AuthenticationBloc>().state.user as AuthenticatedUser;
 
-    _nameFormController = FormControl<String>(value: _user.fistName);
-    _emailFormController = FormControl<String>(value: _user.email);
+    _nameFormController = FormControl<String>(
+      value: _user.fistName,
+      validators: [
+        Validators.minLength(2),
+        _OldValueValidator(_user.fistName),
+      ],
+    );
+    _emailFormController = FormControl<String>(
+      value: _user.email,
+      validators: [
+        Validators.email,
+        _OldValueValidator(_user.email),
+      ],
+    );
 
     _formGroup = FormGroup(<String, FormControl>{
       'name': _nameFormController,
@@ -49,23 +61,43 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.theme.palette.grayscale.g1,
-      appBar: WildAppBar(
-        action: [
-          TextButton(
-            onPressed: () {
-              context.pop();
-            },
-            child: const Text('Готово'),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ReactiveForm(
-            formGroup: _formGroup,
+    return ReactiveForm(
+      formGroup: _formGroup,
+      child: Scaffold(
+        backgroundColor: context.theme.palette.grayscale.g1,
+        appBar: WildAppBar(
+          action: [
+            ReactiveFormConsumer(
+              builder: (BuildContext context, FormGroup formGroup, Widget? child) {
+                return TextButton(
+                  onPressed: () {
+                    if (_nameFormController.valid) {
+                      context.read<ProfileDataChangeBloc>().add(
+                            ProfileDataChangeEvent.changeName(
+                              name: _nameFormController.value!,
+                            ),
+                          );
+                    }
+
+                    if (_emailFormController.valid) {
+                      context.read<ProfileDataChangeBloc>().add(
+                            ProfileDataChangeEvent.updateEmail(
+                              email: _emailFormController.value!,
+                            ),
+                          );
+                    }
+
+                    context.pop();
+                  },
+                  child: const Text('Готово'),
+                );
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -87,6 +119,9 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     children: [
                       CustomTextInput(
                         formControl: _nameFormController,
+                        validationMessage: {
+                          'milLength': (_) => '',
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -97,6 +132,10 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       ),
                       CustomTextInput(
                         formControl: _emailFormController,
+                        validationMessage: {
+                          'email': (error) => '',
+                          'newMailValidator': (error) => 'boba',
+                        },
                       ),
                     ],
                   ),
@@ -115,5 +154,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         ),
       ),
     );
+  }
+}
+
+final class _OldValueValidator extends Validator {
+  _OldValueValidator(this.oldValue);
+
+  final String oldValue;
+
+  @override
+  Map<String, dynamic>? validate(AbstractControl control) {
+    return control.isNull && control.value is! String && control.value != oldValue ? null : {'newMailValidator': true};
   }
 }
