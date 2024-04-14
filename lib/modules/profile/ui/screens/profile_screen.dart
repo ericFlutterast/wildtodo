@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:wildtodo/core/core_utils.dart';
 import 'package:wildtodo/modules/authentication/bloc/authentication.dart';
 import 'package:wildtodo/modules/authentication/models/user.dart';
+import 'package:wildtodo/modules/widgets/shimmer_loading.dart';
 import 'package:wildtodo/modules/widgets/wild_appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -28,17 +29,39 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
         body: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    const ProfileHeader(),
-                  ],
-                ),
+          child: RefreshIndicator(
+            color: context.theme.palette.accent.secondary.vivid,
+            backgroundColor: context.theme.palette.grayscale.g4,
+            onRefresh: () async {
+              context.read<AuthenticationBloc>().add(const AuthenticationEvent.init());
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        const ProfileHeader(),
+                      ],
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
+                  SliverList.separated(
+                    itemBuilder: (context, index) {
+                      return Container(
+                        color: context.theme.palette.grayscale.g5,
+                        height: 100,
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -54,6 +77,47 @@ class ProfileHeader extends StatelessWidget {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         return state.maybeMap<Widget>(
+          inProgress: (state) {
+            return Column(
+              children: [
+                ShimmerLoading(
+                  child: Container(
+                    child: null,
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: context.theme.palette.grayscale.g5,
+                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 23),
+                ShimmerLoading(
+                  child: Container(
+                    height: 25,
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    decoration: BoxDecoration(
+                      color: context.theme.palette.grayscale.g5,
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ShimmerLoading(
+                  child: Container(
+                    height: 23,
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    decoration: BoxDecoration(
+                      color: context.theme.palette.grayscale.g5,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(50),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
           authenticated: (state) {
             final user = state.user as AuthenticatedUser;
 
