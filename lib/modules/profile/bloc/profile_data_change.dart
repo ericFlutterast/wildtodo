@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -66,7 +67,7 @@ sealed class ProfileDataChangeState with _$ProfileDataChangeState {
   }) = SuccessProfileDataChangeState;
 
   const factory ProfileDataChangeState.error({
-    @Default('Произошла ошибка') String? message,
+    @Default('Произошла ошибка') String message,
   }) = ErrorProfileDataChangeState;
 }
 
@@ -84,6 +85,7 @@ class ProfileDataChangeBloc extends Bloc<ProfileDataChangeEvent, ProfileDataChan
         changeSex: (event) => _changeSex(event, emit),
         updatePassword: (event) => _updatePassword(event, emit),
       ),
+      transformer: bloc_concurrency.concurrent(),
     );
   }
 
