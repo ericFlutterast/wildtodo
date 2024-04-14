@@ -18,7 +18,7 @@ final class ProfileDataChangeRepository implements IProfileChangeDataRepo {
   Future<void> changeName({required String name}) async {
     final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
 
-    final response = await _networkClient.request(
+    await _networkClient.request(
       type: Put(
         path: '/api/v1/protected/users/me/name',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),
@@ -31,7 +31,7 @@ final class ProfileDataChangeRepository implements IProfileChangeDataRepo {
   Future<void> changeSex({required int sex}) async {
     final accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
 
-    final response = await _networkClient.request(
+    await _networkClient.request(
       type: Put(
         path: '/api/v1/protected/users/me/sex',
         options: Options(headers: {'Authorization': 'Bearer $accessToken'}),

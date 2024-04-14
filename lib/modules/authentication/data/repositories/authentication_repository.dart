@@ -87,9 +87,9 @@ class AuthenticationRepository implements IAuthenticationRepository {
 
     //TODO: когда появяться дополнительные поля у юзера сделать сериализацию
     return User.authenticatedUser(
-      lastName: 'lupa',
+      lastName: '',
       email: response!.data['email'],
-      fistName: 'pupa',
+      fistName: response.data['name'] ?? '',
       phoneNumber: '',
       photoUrl: '',
       uid: response.data['user_id'],

@@ -86,7 +86,7 @@ class CustomRouter {
               return _createPage(
                 state: state,
                 context: context,
-                child: ProfileSettingsScreen.getPage(),
+                child: ProfileSettingsScreen.getPage(context),
               );
             },
           )
