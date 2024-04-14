@@ -16,9 +16,9 @@ class ProfileSettingsScreen extends StatefulWidget {
   @override
   State<ProfileSettingsScreen> createState() => _ProfileSettingsScreenState();
 
-  static Widget getPage() {
+  static Widget getPage(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileDataChangeBloc(
+      create: (_) => ProfileDataChangeBloc(
         repository: DependenciesScope.of(context).profileDataChangeRepository,
       ),
       child: const ProfileSettingsScreen(),
@@ -134,7 +134,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                         formControl: _emailFormController,
                         validationMessage: {
                           'email': (error) => '',
-                          'newMailValidator': (error) => 'boba',
                         },
                       ),
                     ],
@@ -164,6 +163,8 @@ final class _OldValueValidator extends Validator {
 
   @override
   Map<String, dynamic>? validate(AbstractControl control) {
-    return control.isNull && control.value is! String && control.value != oldValue ? null : {'newMailValidator': true};
+    final flag = control.isNull && control.value != oldValue;
+
+    return flag ? null : {'newValueValidator': true};
   }
 }
