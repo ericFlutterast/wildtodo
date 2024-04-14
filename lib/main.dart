@@ -12,19 +12,24 @@ import 'package:wildtodo/modules/initializer/di/app_dependencies.dart';
 import 'core/theme/wild_dark_theme.dart';
 
 Future<void> main() async {
-  Bloc.observer = AppBlocObserver();
+  Bloc.observer = AppBlocObserver.instance();
   Bloc.transformer = bloc_concurrency.sequential<Object?>();
 
   final dependencies = AppDependencies.instance;
   dependencies.init();
 
-  runApp(
-    ThemeProvider(
-      theme: WildDarkTheme(),
-      child: AppRoot(
-        router: CustomRouter.router,
-        dependencies: dependencies,
+  return runZonedGuarded(
+    () => runApp(
+      ThemeProvider(
+        theme: WildDarkTheme(),
+        child: AppRoot(
+          router: CustomRouter.router,
+          dependencies: dependencies,
+        ),
       ),
     ),
+    (error, stackTracer) {
+      print("Необработанная ошибка $error, stack tracer: $stackTracer");
+    },
   );
 }
